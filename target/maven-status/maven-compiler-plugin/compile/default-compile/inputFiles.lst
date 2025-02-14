@@ -1,7 +1,6 @@
 C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\route\VacinaRoute.java
 C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\dao\ImunitazacoesDAO.java
 C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\model\Vacina.java
-C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\route\ImunitazacoesRoute.java
 C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\route\PacienteRoute.java
 C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\enums\Sexo.java
 C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\repositories\ImunizacaoRepository.java
@@ -17,5 +16,6 @@ C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\dao\PacienteDAO.java
 C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\service\ImunitazacoesService.java
 C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\dao\DocesDAO.java
 C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\model\Paciente.java
+C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\route\ImunizacoesController.java
 C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\service\DoseService.java
 C:\Users\arthu\Workspace\vacinas\src\main\java\com\vacinas\core\config\ConexaoDAO.java

@@ -1,4 +1,3 @@
-com\vacinas\route\ImunitazacoesRoute.class
 com\vacinas\service\ImunitazacoesService.class
 com\vacinas\service\VacinaService.class
 com\vacinas\model\Imunizacoes.class
@@ -17,6 +16,7 @@ com\vacinas\enums\Sexo.class
 com\vacinas\dao\PacienteDAO.class
 com\vacinas\Main$2.class
 com\vacinas\enums\PublicoAlvo.class
+com\vacinas\route\ImunizacoesController.class
 com\vacinas\Main.class
 com\vacinas\route\VacinaRoute$1.class
 com\vacinas\dao\DocesDAO.class

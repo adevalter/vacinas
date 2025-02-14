@@ -8,12 +8,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/estatisticas/imunizacoes/paciente")
-public class ImunitazacoesRoute {
+public class ImunizacoesController {
 
     private final ImunizacaoRepository imunizacaoRepository;
 
-    // Construtor correto para injeção de dependência
-    public ImunitazacoesRoute(ImunizacaoRepository imunizacaoRepository) {
+    public ImunizacoesController(ImunizacaoRepository imunizacaoRepository) {
         this.imunizacaoRepository = imunizacaoRepository;
     }
 
