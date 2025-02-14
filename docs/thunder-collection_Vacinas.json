@@ -1,0 +1,81 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "Vacinas",
+    "collectionId": "f542d9d8-5da2-4e82-93ac-f9b330a27df1",
+    "dateExported": "2025-02-14T16:58:44.384Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "1fd26993-ebcf-44ea-969e-c0a79212a36f",
+            "colId": "f542d9d8-5da2-4e82-93ac-f9b330a27df1",
+            "containerId": "",
+            "name": "https://localhost:8080/vacina",
+            "url": "http://localhost:8080/vacina",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2025-02-14T16:57:28.167Z",
+            "modified": "2025-02-14T16:57:28.167Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"vacina\":\"Alterar e Excluir outra \",\n  \"descricao\":\"Vacina teste 2\",\n  \"limiteAplicacao\":\"300\",\n  \"publicoAlvo\":\"ADULTO\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "057e611e-b236-4a4f-9024-7c6e34fade9e",
+            "colId": "f542d9d8-5da2-4e82-93ac-f9b330a27df1",
+            "containerId": "",
+            "name": "https://localhost:8080/vacina - alterar",
+            "url": "http://localhost:8080/vacina/22",
+            "method": "PUT",
+            "sortNum": 20000,
+            "created": "2025-02-14T16:57:43.959Z",
+            "modified": "2025-02-14T16:57:43.959Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"vacina\":\"Alterar e Excluir mesmo \",\n  \"descricao\":\"Vacina teste 22\",\n  \"limiteAplicacao\":\"3001\",\n  \"publicoAlvo\":\"CRIANÇA\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "ebfee50b-9d6e-40de-af68-015000193e5d",
+            "colId": "f542d9d8-5da2-4e82-93ac-f9b330a27df1",
+            "containerId": "",
+            "name": "https://localhost:8080/vacina - consulta por id",
+            "url": "http://localhost:8080/vacina/22",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2025-02-14T16:57:51.611Z",
+            "modified": "2025-02-14T16:57:51.611Z",
+            "headers": []
+        },
+        {
+            "_id": "456e191b-02f8-4eb4-8a28-a41281b20719",
+            "colId": "f542d9d8-5da2-4e82-93ac-f9b330a27df1",
+            "containerId": "",
+            "name": "https://localhost:8080/vacina - consulta todas",
+            "url": "http://localhost:8080/vacina",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2025-02-14T16:57:58.653Z",
+            "modified": "2025-02-14T16:57:58.653Z",
+            "headers": []
+        },
+        {
+            "_id": "b4598ac1-42a7-4bf1-96d9-5ed9c65811b1",
+            "colId": "f542d9d8-5da2-4e82-93ac-f9b330a27df1",
+            "containerId": "",
+            "name": "https://localhost:8080/vacina - Excluir",
+            "url": "http://localhost:8080/vacina/23",
+            "method": "DELETE",
+            "sortNum": 50000,
+            "created": "2025-02-14T16:58:10.647Z",
+            "modified": "2025-02-14T16:58:10.647Z",
+            "headers": []
+        }
+    ],
+    "ref": "r5ZXZOf1ppuxvNPteA25Zkdazi2tFIXqCD25SoSRHVGCKAkdd2dO4oExJR3N1pdx0sRINggSDB597-jp3IFrgA"
+}

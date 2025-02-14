@@ -1,5 +1,5 @@
 package com.vacinas.dao;
 
-public class DocesDAO {
+public class DosesDAO {
 
 }

@@ -1,18 +1,18 @@
 package com.vacinas.model;
 
-public class Dose {
+public class Doses {
     private int id;
     private int id_vacina;
     private String dose;
     private int idadeRecomendadaAplicacao;
 
-    public Dose(int id_vacina, String dose, int idadeRecomendadaAplicacao) {
+    public Doses(int id_vacina, String dose, int idadeRecomendadaAplicacao) {
         this.id_vacina = id_vacina;
         this.dose = dose;
         this.idadeRecomendadaAplicacao = idadeRecomendadaAplicacao;
     }
 
-    public Dose(int id, int id_vacina, String dose, int idadeRecomendadaAplicacao) {
+    public Doses(int id, int id_vacina, String dose, int idadeRecomendadaAplicacao) {
         this.id = id;
         this.id_vacina = id_vacina;
         this.dose = dose;
