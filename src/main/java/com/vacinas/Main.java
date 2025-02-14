@@ -2,7 +2,9 @@ package com.vacinas;
 
 import java.sql.SQLException;
 
+import com.vacinas.route.ImunizacoesRoute;
 import com.vacinas.route.VacinaRoute;
+import com.vacinas.service.ImunizacoesService;
 import com.vacinas.service.VacinaService;
 
 import spark.Request;
@@ -13,7 +15,7 @@ import spark.Spark;
 public class Main {
 
     private static final VacinaService vacinaService = new VacinaService();
-
+    private static final ImunizacoesService imunizacoesService = new ImunizacoesService();
     public static void main(String[] args) throws SQLException {
 
         Spark.port(8080);
@@ -50,6 +52,6 @@ public class Main {
         });
 
         VacinaRoute.processarRotas(vacinaService);
-
+        ImunizacoesRoute.processarRotas(imunizacoesService);
     }
 }
