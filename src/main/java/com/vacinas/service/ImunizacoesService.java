@@ -11,11 +11,11 @@ public class ImunizacoesService {
     
     private Connection conexao;
 
-    public Imunizacoes consultarPorId(int id) {
+    public Imunizacoes consultarPorIdPaciente(int idPaciente) {
         try {
             this.conexao = ConexaoDAO.getConexao();
             ImunizacoesDAO.conexao = conexao;
-            Imunizacoes imunizacoes = ImunizacoesDAO.consultarPorId(id);
+            Imunizacoes imunizacoes = ImunizacoesDAO.consultarPorIdPaciente(idPaciente);
             return imunizacoes;
         } catch (SQLException e) {
             // TODO Auto-generated catch block

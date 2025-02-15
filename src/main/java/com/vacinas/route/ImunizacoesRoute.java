@@ -19,7 +19,7 @@ public class ImunizacoesRoute {
     public static void processarRotas(ImunizacoesService imunizacoesService) {
         Spark.put("/imunizacoes/:id", alterarImunizacoes(imunizacoesService));
         Spark.delete("/imunizacoes/:id",excluirImunizacoes(imunizacoesService));
-        Spark.get("/imunizacoes/:id", consultarPorId(imunizacoesService));
+        Spark.get("/imunizacoes/paciente/:id", consultarPorIdPaciente(imunizacoesService));
     }
 
     public static class LocalDateAdapter implements JsonDeserializer<LocalDate>, JsonSerializer<LocalDate> {
@@ -36,15 +36,15 @@ public class ImunizacoesRoute {
         }
     }
 
-    private static Route consultarPorId(ImunizacoesService imunizacoesService) {
+    private static Route consultarPorIdPaciente(ImunizacoesService imunizacoesService) {
         return new Route() {
             @Override
             public Object handle(Request request, Response response) throws Exception {
                 response.type("aplication/json");
 
-                int id = Integer.parseInt(request.params(":id"));
+                int idPaciente = Integer.parseInt(request.params(":id"));
 
-                Imunizacoes imunizacoes = imunizacoesService.consultarPorId(id);
+                Imunizacoes imunizacoes = imunizacoesService.consultarPorIdPaciente(idPaciente);
                 if (imunizacoes != null) {
                     response.status(200);
                     Gson gson = new GsonBuilder()
@@ -54,7 +54,7 @@ public class ImunizacoesRoute {
 
                 } else {
                     response.status(404);
-                    return "{\"message\": \"Não existe imunização com id " + id + ".\"}";
+                    return "{\"message\": \"Não existe imunização para paciente com ID " + idPaciente + ".\"}";
                 }
 
             }

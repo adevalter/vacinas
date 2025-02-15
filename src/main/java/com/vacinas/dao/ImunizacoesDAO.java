@@ -42,15 +42,16 @@ public class ImunizacoesDAO {
         }
     }
     
-    public static Imunizacoes consultarPorId(int id) throws SQLException {
+    public static Imunizacoes consultarPorIdPaciente(int idPaciente) throws SQLException {
         Imunizacoes imunizacoes = null;
-        String sql = "Select * from imunizacoes where id = ?";
+        String sql = "Select * from imunizacoes where id_paciente = ?";
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
-            comando.setInt(1, id);
+            comando.setInt(1, idPaciente);
             ResultSet resultado = comando.executeQuery();
             if (resultado.next()) {
                 LocalDate dataAplicacao = resultado.getDate("data_aplicacao").toLocalDate();
-                imunizacoes = new Imunizacoes(resultado.getInt("id"),
+                imunizacoes = new Imunizacoes(
+                    resultado.getInt("id"),
                     resultado.getInt("id_paciente"),
                     resultado.getInt("id_dose"),
                     dataAplicacao,
