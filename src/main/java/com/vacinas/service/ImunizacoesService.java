@@ -13,6 +13,17 @@ public class ImunizacoesService {
 
     private Connection conexao;
 
+    public int inserirImunizacao(Imunizacoes imunizacoes) {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            ImunizacoesDAO.conexao = conexao;
+            return ImunizacoesDAO.inserirImunizacao(imunizacoes);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public ArrayList<Imunizacoes> consultarTodasImunizacoes() {
         try {
             this.conexao = ConexaoDAO.getConexao();
