@@ -10,6 +10,8 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import spark.Request;
 import spark.Response;
@@ -139,6 +141,29 @@ public class ImunizacoesRoute {
 
             }
 
+        };
+    }
+
+    private static Route contarVacinasPorPaciente(ImunizacoesService imunizacoesService) {
+        return (Request request, Response response) -> {
+            response.type("application/json");
+
+            try {
+                int idPaciente = Integer.parseInt(request.params("id"));
+                int quantidade = imunizacoesService.contarVacinasPorPaciente(idPaciente);
+
+                Map<String, Object> resposta = new HashMap<>();
+                resposta.put("quantidade", quantidade);
+
+                response.status(200);
+                return new Gson().toJson(resposta);
+            } catch (NumberFormatException e) {
+                response.status(400);
+                return new Gson().toJson(Map.of("erro", "ID do paciente inválido."));
+            } catch (Exception e) {
+                response.status(500);
+                return new Gson().toJson(Map.of("erro", "Erro ao processar a solicitação."));
+            }
         };
     }
 }
