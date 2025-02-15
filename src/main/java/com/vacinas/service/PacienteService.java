@@ -38,18 +38,18 @@ public class PacienteService {
     public Paciente create(Paciente paciente) {
         try {
             this.conexao = ConexaoDAO.getConexao();
-            PacienteDAO.conexao = conexao;
+            PacienteDAO.conexao = this.conexao;
             return PacienteDAO.criar(paciente);
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     public boolean delete(int id) {
         try {
             this.conexao = ConexaoDAO.getConexao();
-            PacienteDAO.conexao = conexao;
+            PacienteDAO.conexao = this.conexao;
             return PacienteDAO.deletar(id);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -60,11 +60,11 @@ public class PacienteService {
     public List<Paciente> buscarTodos() {
         try {
             this.conexao = ConexaoDAO.getConexao();
-            PacienteDAO.conexao = conexao;
+            PacienteDAO.conexao = this.conexao;
             return PacienteDAO.buscarTodos();
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return List.of();
         }
     }
 }

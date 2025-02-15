@@ -76,12 +76,12 @@ public class PacienteRoute {
             Paciente paciente = gson.fromJson(request.body(), Paciente.class);
             Paciente novoPaciente = pacienteService.create(paciente);
 
-            if (novoPaciente != null) {
+            if (novoPaciente != null && novoPaciente.getId() > 0) {
                 response.status(201);
                 return gson.toJson(novoPaciente);
             } else {
                 response.status(500);
-                return new Gson().toJson("{\"message\": \"Erro ao criar paciente.\"}");
+                return gson.toJson("{\"message\": \"Erro ao criar paciente.\"}");
             }
         };
     }
@@ -105,18 +105,26 @@ public class PacienteRoute {
     private static Route buscarTodos(PacienteService pacienteService) {
         return (Request request, Response response) -> {
             response.type("application/json");
-            List<Paciente> pacientes = pacienteService.buscarTodos();
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                    .create();
 
-            if (pacientes != null && !pacientes.isEmpty()) {
+            try {
+                List<Paciente> pacientes = pacienteService.buscarTodos();
+
+                if (pacientes == null || pacientes.isEmpty()) {
+                    response.status(404);
+                    return gson.toJson("{\"message\": \"Nenhum paciente encontrado.\"}");
+                }
+
                 response.status(200);
-                Gson gson = new GsonBuilder()
-                        .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                        .create();
                 return gson.toJson(pacientes);
-            } else {
-                response.status(404);
-                return new Gson().toJson("{\"message\": \"Nenhum paciente encontrado.\"}");
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.status(500);
+                return gson.toJson("{\"message\": \"Erro interno no servidor.\"}");
             }
         };
     }
+
 }
