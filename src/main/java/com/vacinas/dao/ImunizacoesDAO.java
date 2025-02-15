@@ -88,5 +88,18 @@ public class ImunizacoesDAO {
         return imunizacoes;
     }
 
+    public static int contarVacinasPorPaciente(int idPaciente) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM imunizacoes WHERE id_paciente = ?";
+
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+            comando.setInt(1, idPaciente);
+            ResultSet resultado = comando.executeQuery();
+            if (resultado.next()) {
+                return resultado.getInt(1);
+            }
+        }
+        return 0;
+    }
+
 
 }
