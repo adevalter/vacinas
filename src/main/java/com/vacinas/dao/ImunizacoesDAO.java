@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import com.vacinas.model.Imunizacoes;
 
@@ -40,6 +41,29 @@ public class ImunizacoesDAO {
             conexao.rollback();
             throw e;
         }
+    }
+
+    public static ArrayList<Imunizacoes> consultarTodasImunizacoes() throws SQLException {
+        ArrayList<Imunizacoes> listaImunizacoes = new ArrayList<Imunizacoes>();
+
+        String sql = "Select * from imunizacoes";
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+
+            ResultSet resultado = comando.executeQuery();
+            while (resultado.next()) {
+                LocalDate dataAplicacao = resultado.getDate("data_aplicacao").toLocalDate();
+                listaImunizacoes.add(new Imunizacoes(
+                    resultado.getInt("id"),
+                    resultado.getInt("id_paciente"),
+                    resultado.getInt("id_dose"),
+                    dataAplicacao,
+                    resultado.getString("fabricante"), 
+                    resultado.getString("lote"),
+                    resultado.getString("local_aplicacao"),
+                    resultado.getString("profissional_aplicador")));
+            }
+        }
+        return listaImunizacoes;
     }
     
     public static Imunizacoes consultarPorIdPaciente(int idPaciente) throws SQLException {
