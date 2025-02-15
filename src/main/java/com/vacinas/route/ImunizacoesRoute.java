@@ -216,4 +216,27 @@ public class ImunizacoesRoute {
             }
         };
     }
+
+    private static Route contarVacinasAcimaIdade(ImunizacoesService imunizacoesService) {
+        return (Request request, Response response) -> {
+            response.type("application/json");
+
+            try {
+                int idadeMeses = Integer.parseInt(request.params("meses"));
+                int quantidade = imunizacoesService.contarVacinasAcimaIdade(idadeMeses);
+
+                Map<String, Object> resposta = new HashMap<>();
+                resposta.put("quantidade", quantidade);
+
+                response.status(200);
+                return new Gson().toJson(resposta);
+            } catch (NumberFormatException e) {
+                response.status(400);
+                return new Gson().toJson(Map.of("erro", "Idade inválida. Informe um número inteiro de meses."));
+            } catch (Exception e) {
+                response.status(500);
+                return new Gson().toJson(Map.of("erro", "Erro ao processar a solicitação."));
+            }
+        };
+    }
 }

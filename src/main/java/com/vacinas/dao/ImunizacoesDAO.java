@@ -143,4 +143,21 @@ public class ImunizacoesDAO {
         return 0;
     }
 
+    public static int contarVacinasAcimaIdade(int idadeMeses) throws SQLException {
+        String sql = """
+        SELECT COUNT(*) 
+        FROM calendario_vacinal 
+        WHERE idade_meses > ?
+    """;
+
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+            comando.setInt(1, idadeMeses);
+            ResultSet resultado = comando.executeQuery();
+            if (resultado.next()) {
+                return resultado.getInt(1);
+            }
+        }
+        return 0;
+    }
+
 }
