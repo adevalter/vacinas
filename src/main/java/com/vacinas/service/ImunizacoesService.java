@@ -9,7 +9,7 @@ import com.vacinas.dao.ImunizacoesDAO;
 import com.vacinas.model.Imunizacoes;
 
 public class ImunizacoesService {
-    
+
     private Connection conexao;
 
     public ArrayList<Imunizacoes> consultarTodasImunizacoes() {
@@ -38,7 +38,7 @@ public class ImunizacoesService {
         return null;
     }
 
-    public int alterarImunizacoes(Imunizacoes imunizacoes) {
+    public int alterarImunizacoes(Imunizacoes imunizacoes) throws SQLException {
         try {
             this.conexao = ConexaoDAO.getConexao();
             ImunizacoesDAO.conexao = conexao;
@@ -46,11 +46,9 @@ public class ImunizacoesService {
             return resultado;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw e;
+
         }
-
-        return 0;
-
     }
 
     public int excluir(int id) {
