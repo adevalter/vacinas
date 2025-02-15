@@ -2,8 +2,10 @@ package com.vacinas.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.vacinas.enums.Sexo;
 import com.vacinas.model.Paciente;
 
 public class PacienteDAO {
@@ -22,5 +24,24 @@ public class PacienteDAO {
         }
 
     }
+    public static Paciente consultarPorId(int id) throws SQLException {
+        String sql = "SELECT * FROM pacientes WHERE id = ?";
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+            comando.setInt(1, id);
+            ResultSet resultado = comando.executeQuery();
+            
+            if (resultado.next()) {
 
+                return new Paciente(
+                    resultado.getInt("id"),
+                    resultado.getString("nome"),
+                    resultado.getString("cpf"),
+                    Sexo.valueOf(resultado.getString("sexo")), 
+                    resultado.getDate("data_nascimento").toLocalDate() 
+                );
+            }
+        }
+        return null; 
+    }
 }
+    

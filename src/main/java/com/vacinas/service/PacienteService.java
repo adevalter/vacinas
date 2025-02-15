@@ -21,4 +21,13 @@ public class PacienteService {
             return false;
         }
     }
+
+    public Paciente consultarPorId(int id) {
+        try {
+            return PacienteDAO.consultarPorId(id); 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
