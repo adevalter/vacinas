@@ -1,4 +1,4 @@
-package com.vacinas.core.config;
+package com.vacinas.DAO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,5 +18,4 @@ public class ConexaoDAO {
         return DriverManager.getConnection(URL, USER, PASSWORD);
 
     }
-
 }
