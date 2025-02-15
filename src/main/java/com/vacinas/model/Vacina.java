@@ -6,21 +6,21 @@ public class Vacina {
     private int id;
     private String vacina;
     private String descricao;
-    private String limite_aplicacao;
+    private int  limiteAplicacao;
     private PublicoAlvo publicoAlvo;
 
-    public Vacina(int id, String vacina, String descricao, String limite_aplicacao, PublicoAlvo publicoAlvo) {
+    public Vacina(int id, String vacina, String descricao, int  limiteAplicacao, PublicoAlvo publicoAlvo) {
         this.id = id;
         this.vacina = vacina;
         this.descricao = descricao;
-        this.limite_aplicacao = limite_aplicacao;
+        this.limiteAplicacao = limiteAplicacao;
         this.publicoAlvo = publicoAlvo;
     }
 
-    public Vacina(String vacina, String descricao, String limite_aplicacao, PublicoAlvo publicoAlvo) {
+    public Vacina(String vacina, String descricao, int  limiteAplicacao, PublicoAlvo publicoAlvo) {
         this.vacina = vacina;
         this.descricao = descricao;
-        this.limite_aplicacao = limite_aplicacao;
+        this.limiteAplicacao = limiteAplicacao;
         this.publicoAlvo = publicoAlvo;
     }
 
@@ -48,12 +48,12 @@ public class Vacina {
         this.descricao = descricao;
     }
 
-    public String getLimite_aplicacao() {
-        return limite_aplicacao;
+    public int getLimiteAplicacao() {
+        return limiteAplicacao;
     }
 
-    public void setLimite_aplicacao(String limite_aplicacao) {
-        this.limite_aplicacao = limite_aplicacao;
+    public void setLimiteAplicacao(int limiteAplicacao) {
+        this.limiteAplicacao = limiteAplicacao;
     }
 
     public PublicoAlvo getPublicoAlvo() {
