@@ -1,6 +1,7 @@
 package com.vacinas.service;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.sql.Connection;
 
@@ -118,6 +119,17 @@ public class ImunizacoesService {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public ArrayList<Imunizacoes> consultarImunizacoesPorPacienteEIntervalo(int idPaciente, LocalDate dtInicio, LocalDate dtFim) {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            ImunizacoesDAO.conexao = conexao;
+            return ImunizacoesDAO.consultarImunizacoesPorPacienteEIntervalo(idPaciente, dtInicio, dtFim);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
 }
