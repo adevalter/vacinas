@@ -122,5 +122,25 @@ public class ImunizacoesDAO {
         return null;
     }
 
+    public static int contarVacinasAtrasadas(int idPaciente) throws SQLException {
+        String sql = """
+        SELECT COUNT(*) 
+        FROM calendario_vacinal cv
+        LEFT JOIN imunizacoes i ON cv.id_vacina = i.id_dose AND i.id_paciente = ?
+        JOIN pacientes p ON p.id = ?
+        WHERE i.id IS NULL 
+        AND cv.idade_meses <= TIMESTAMPDIFF(MONTH, p.data_nascimento, CURDATE())
+    """;
+
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+            comando.setInt(1, idPaciente);
+            comando.setInt(2, idPaciente);
+            ResultSet resultado = comando.executeQuery();
+            if (resultado.next()) {
+                return resultado.getInt(1);
+            }
+        }
+        return 0;
+    }
 
 }

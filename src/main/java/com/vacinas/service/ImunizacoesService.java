@@ -87,4 +87,15 @@ public class ImunizacoesService {
         return null;
     }
 
+    public int contarVacinasAtrasadas(int idPaciente) {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            ImunizacoesDAO.conexao = conexao;
+            return ImunizacoesDAO.contarVacinasAtrasadas(idPaciente);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 }
