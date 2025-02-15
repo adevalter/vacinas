@@ -3,6 +3,8 @@ package com.vacinas.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.time.LocalDate;
 
 import com.vacinas.model.Imunizacoes;
 
@@ -11,14 +13,16 @@ public class ImunizacoesDAO {
 
     public static int atualizarImunizacoes(Imunizacoes imunizacoes) throws SQLException {
 
-        String sql = "UPDATE imunizacoes SET data_aplicacao = ?, fabricante = ?, lote = ?, local_aplicacao = ?, profissional_aplicador = ? WHERE id = ? ";
+        String sql = "UPDATE imunizacoes SET id_paciente = ?, id_dose = ?, data_aplicacao = ?, fabricante = ?, lote = ?, local_aplicacao = ?, profissional_aplicador = ? WHERE id = ? ";
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
-            comando.setObject(1, imunizacoes.getDataAplicacao());
-            comando.setString(2, imunizacoes.getFabricante());
-            comando.setString(3, imunizacoes.getLote());
-            comando.setString(4, imunizacoes.getLocalAplicacao().toString());
-            comando.setString(5, imunizacoes.getProfissionalAplicador());
-            comando.setInt(6, imunizacoes.getId());
+            comando.setInt(1, imunizacoes.getIdPaciente());
+            comando.setInt(2, imunizacoes.getIdDose());
+            comando.setObject(3, imunizacoes.getDataAplicacao());
+            comando.setString(4, imunizacoes.getFabricante());
+            comando.setString(5, imunizacoes.getLote());
+            comando.setString(6, imunizacoes.getLocalAplicacao().toString());
+            comando.setString(7, imunizacoes.getProfissionalAplicador());
+            comando.setInt(8, imunizacoes.getId());
             
 
             int linhasAlteradas = comando.executeUpdate();
@@ -36,6 +40,27 @@ public class ImunizacoesDAO {
             conexao.rollback();
             throw e;
         }
+    }
+    
+    public static Imunizacoes consultarPorId(int id) throws SQLException {
+        Imunizacoes imunizacoes = null;
+        String sql = "Select * from imunizacoes where id = ?";
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+            comando.setInt(1, id);
+            ResultSet resultado = comando.executeQuery();
+            if (resultado.next()) {
+                LocalDate dataAplicacao = resultado.getDate("data_aplicacao").toLocalDate();
+                imunizacoes = new Imunizacoes(resultado.getInt("id"),
+                    resultado.getInt("id_paciente"),
+                    resultado.getInt("id_dose"),
+                    dataAplicacao,
+                    resultado.getString("fabricante"), 
+                    resultado.getString("lote"),
+                    resultado.getString("local_aplicacao"),
+                    resultado.getString("profissional_aplicador"));
+            }
+        }
+        return imunizacoes;
     }
 
 

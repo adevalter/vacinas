@@ -11,6 +11,19 @@ public class ImunizacoesService {
     
     private Connection conexao;
 
+    public Imunizacoes consultarPorId(int id) {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            ImunizacoesDAO.conexao = conexao;
+            Imunizacoes imunizacoes = ImunizacoesDAO.consultarPorId(id);
+            return imunizacoes;
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public int alterarImunizacoes(Imunizacoes imunizacoes) {
         try {
             this.conexao = ConexaoDAO.getConexao();
