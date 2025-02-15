@@ -160,4 +160,26 @@ public class ImunizacoesDAO {
         return 0;
     }
 
+    public static int contarVacinasProximoMes(int idPaciente) throws SQLException {
+        String sql = """
+        SELECT COUNT(*) 
+        FROM calendario_vacinal cv
+        JOIN pacientes p ON p.id = ?
+        LEFT JOIN imunizacoes i ON cv.id_vacina = i.id_dose AND i.id_paciente = ?
+        WHERE i.id IS NULL 
+        AND cv.idade_meses BETWEEN TIMESTAMPDIFF(MONTH, p.data_nascimento, CURDATE()) + 1
+                             AND TIMESTAMPDIFF(MONTH, p.data_nascimento, CURDATE()) + 2
+    """;
+
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+            comando.setInt(1, idPaciente);
+            comando.setInt(2, idPaciente);
+            ResultSet resultado = comando.executeQuery();
+            if (resultado.next()) {
+                return resultado.getInt(1);
+            }
+        }
+        return 0;
+    }
+
 }

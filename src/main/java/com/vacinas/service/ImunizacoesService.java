@@ -109,4 +109,15 @@ public class ImunizacoesService {
         return 0;
     }
 
+    public int contarVacinasProximoMes(int idPaciente) {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            ImunizacoesDAO.conexao = conexao;
+            return ImunizacoesDAO.contarVacinasProximoMes(idPaciente);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 }

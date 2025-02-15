@@ -25,6 +25,11 @@ public class ImunizacoesRoute {
         Spark.delete("/imunizacoes/:id", excluirImunizacoes(imunizacoesService));
         Spark.get("/imunizacoes/paciente/:id", consultarPorIdPaciente(imunizacoesService));
         Spark.get("/imunizacoes", consultarTodasImunizacoes(imunizacoesService));
+        Spark.get("/estatisticas/imunizacoes/paciente/:id", contarVacinasPorPaciente(imunizacoesService));
+        Spark.get("/imunizacao/:id", consultarImunizacaoPorId(imunizacoesService));
+        Spark.get("/estatisticas/imunizacoes_atrasadas/paciente/:id", contarVacinasAtrasadas(imunizacoesService));
+        Spark.get("/estatisticas/imunizacoes_acima_idade/:meses", contarVacinasAcimaIdade(imunizacoesService));
+        Spark.get("/estatisticas/proximas_imunizacoes/paciente/:id", contarVacinasProximoMes(imunizacoesService));
     }
 
     public static class LocalDateAdapter implements JsonDeserializer<LocalDate>, JsonSerializer<LocalDate> {
@@ -233,6 +238,28 @@ public class ImunizacoesRoute {
             } catch (NumberFormatException e) {
                 response.status(400);
                 return new Gson().toJson(Map.of("erro", "Idade inválida. Informe um número inteiro de meses."));
+            } catch (Exception e) {
+                response.status(500);
+                return new Gson().toJson(Map.of("erro", "Erro ao processar a solicitação."));
+            }
+        };
+    }
+    private static Route contarVacinasProximoMes(ImunizacoesService imunizacoesService) {
+        return (Request request, Response response) -> {
+            response.type("application/json");
+
+            try {
+                int idPaciente = Integer.parseInt(request.params("id"));
+                int quantidade = imunizacoesService.contarVacinasProximoMes(idPaciente);
+
+                Map<String, Object> resposta = new HashMap<>();
+                resposta.put("quantidade", quantidade);
+
+                response.status(200);
+                return new Gson().toJson(resposta);
+            } catch (NumberFormatException e) {
+                response.status(400);
+                return new Gson().toJson(Map.of("erro", "ID do paciente inválido."));
             } catch (Exception e) {
                 response.status(500);
                 return new Gson().toJson(Map.of("erro", "Erro ao processar a solicitação."));
