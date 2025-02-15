@@ -98,4 +98,15 @@ public class ImunizacoesService {
         return 0;
     }
 
+    public int contarVacinasAcimaIdade(int idadeMeses) {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            ImunizacoesDAO.conexao = conexao;
+            return ImunizacoesDAO.contarVacinasAcimaIdade(idadeMeses);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 }
