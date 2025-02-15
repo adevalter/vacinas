@@ -30,6 +30,7 @@ public class ImunizacoesRoute {
         Spark.get("/estatisticas/imunizacoes_atrasadas/paciente/:id", contarVacinasAtrasadas(imunizacoesService));
         Spark.get("/estatisticas/imunizacoes_acima_idade/:meses", contarVacinasAcimaIdade(imunizacoesService));
         Spark.get("/estatisticas/proximas_imunizacoes/paciente/:id", contarVacinasProximoMes(imunizacoesService));
+        Spark.get("/imunizacao/paciente/:id/aplicacao/:dt_ini/:dt_fim", consultarImunizacoesPorPacienteEIntervalo(imunizacoesService));
     }
 
     public static class LocalDateAdapter implements JsonDeserializer<LocalDate>, JsonSerializer<LocalDate> {
@@ -257,6 +258,36 @@ public class ImunizacoesRoute {
 
                 response.status(200);
                 return new Gson().toJson(resposta);
+            } catch (NumberFormatException e) {
+                response.status(400);
+                return new Gson().toJson(Map.of("erro", "ID do paciente inválido."));
+            } catch (Exception e) {
+                response.status(500);
+                return new Gson().toJson(Map.of("erro", "Erro ao processar a solicitação."));
+            }
+        };
+    }
+    private static Route consultarImunizacoesPorPacienteEIntervalo(ImunizacoesService imunizacoesService) {
+        return (Request request, Response response) -> {
+            response.type("application/json");
+
+            try {
+                int idPaciente = Integer.parseInt(request.params("id"));
+                LocalDate dtInicio = LocalDate.parse(request.params("dt_ini"));
+                LocalDate dtFim = LocalDate.parse(request.params("dt_fim"));
+
+                ArrayList<Imunizacoes> imunizacoes = imunizacoesService.consultarImunizacoesPorPacienteEIntervalo(idPaciente, dtInicio, dtFim);
+
+                if (!imunizacoes.isEmpty()) {
+                    response.status(200);
+                    Gson gson = new GsonBuilder()
+                            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                            .create();
+                    return gson.toJson(imunizacoes);
+                } else {
+                    response.status(404);
+                    return new Gson().toJson(Map.of("erro", "Nenhuma imunização encontrada para o período informado."));
+                }
             } catch (NumberFormatException e) {
                 response.status(400);
                 return new Gson().toJson(Map.of("erro", "ID do paciente inválido."));

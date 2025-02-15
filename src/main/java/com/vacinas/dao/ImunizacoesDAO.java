@@ -1,9 +1,6 @@
 package com.vacinas.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -182,4 +179,35 @@ public class ImunizacoesDAO {
         return 0;
     }
 
+    public static ArrayList<Imunizacoes> consultarImunizacoesPorPacienteEIntervalo(int idPaciente, LocalDate dtInicio, LocalDate dtFim) throws SQLException {
+        String sql = """
+        SELECT * FROM imunizacoes 
+        WHERE id_paciente = ? 
+        AND data_aplicacao BETWEEN ? AND ?
+    """;
+
+        ArrayList<Imunizacoes> listaImunizacoes = new ArrayList<>();
+
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+            comando.setInt(1, idPaciente);
+            comando.setDate(2, Date.valueOf(dtInicio));
+            comando.setDate(3, Date.valueOf(dtFim));
+
+            ResultSet resultado = comando.executeQuery();
+            while (resultado.next()) {
+                LocalDate dataAplicacao = resultado.getDate("data_aplicacao").toLocalDate();
+                listaImunizacoes.add(new Imunizacoes(
+                        resultado.getInt("id"),
+                        resultado.getInt("id_paciente"),
+                        resultado.getInt("id_dose"),
+                        dataAplicacao,
+                        resultado.getString("fabricante"),
+                        resultado.getString("lote"),
+                        resultado.getString("local_aplicacao"),
+                        resultado.getString("profissional_aplicador")
+                ));
+            }
+        }
+        return listaImunizacoes;
+    }
 }
