@@ -143,6 +143,7 @@ public class ImunizacoesRoute {
 
         };
     }
+
     private static Route contarVacinasPorPaciente(ImunizacoesService imunizacoesService) {
         return (Request request, Response response) -> {
             response.type("application/json");
@@ -159,6 +160,34 @@ public class ImunizacoesRoute {
             } catch (NumberFormatException e) {
                 response.status(400);
                 return new Gson().toJson(Map.of("erro", "ID do paciente inválido."));
+            } catch (Exception e) {
+                response.status(500);
+                return new Gson().toJson(Map.of("erro", "Erro ao processar a solicitação."));
+            }
+        };
+    }
+
+    private static Route consultarImunizacaoPorId(ImunizacoesService imunizacoesService) {
+        return (Request request, Response response) -> {
+            response.type("application/json");
+
+            try {
+                int id = Integer.parseInt(request.params("id"));
+                Imunizacoes imunizacao = imunizacoesService.consultarImunizacaoPorId(id);
+
+                if (imunizacao != null) {
+                    response.status(200);
+                    Gson gson = new GsonBuilder()
+                            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                            .create();
+                    return gson.toJson(imunizacao);
+                } else {
+                    response.status(404);
+                    return new Gson().toJson(Map.of("erro", "Imunização com ID " + id + " não encontrada."));
+                }
+            } catch (NumberFormatException e) {
+                response.status(400);
+                return new Gson().toJson(Map.of("erro", "ID da imunização inválido."));
             } catch (Exception e) {
                 response.status(500);
                 return new Gson().toJson(Map.of("erro", "Erro ao processar a solicitação."));

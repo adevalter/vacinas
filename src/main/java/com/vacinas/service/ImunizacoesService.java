@@ -75,4 +75,16 @@ public class ImunizacoesService {
         }
         return 0;
     }
+
+    public Imunizacoes consultarImunizacaoPorId(int id) {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            ImunizacoesDAO.conexao = conexao;
+            return ImunizacoesDAO.consultarImunizacaoPorId(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

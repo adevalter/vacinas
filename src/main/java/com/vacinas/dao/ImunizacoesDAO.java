@@ -100,4 +100,27 @@ public class ImunizacoesDAO {
         return 0;
     }
 
+    public static Imunizacoes consultarImunizacaoPorId(int id) throws SQLException {
+        String sql = "SELECT * FROM imunizacoes WHERE id = ?";
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+            comando.setInt(1, id);
+            ResultSet resultado = comando.executeQuery();
+            if (resultado.next()) {
+                LocalDate dataAplicacao = resultado.getDate("data_aplicacao").toLocalDate();
+                return new Imunizacoes(
+                        resultado.getInt("id"),
+                        resultado.getInt("id_paciente"),
+                        resultado.getInt("id_dose"),
+                        dataAplicacao,
+                        resultado.getString("fabricante"),
+                        resultado.getString("lote"),
+                        resultado.getString("local_aplicacao"),
+                        resultado.getString("profissional_aplicador")
+                );
+            }
+        }
+        return null;
+    }
+
+
 }
