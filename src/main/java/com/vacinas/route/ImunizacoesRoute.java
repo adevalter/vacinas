@@ -5,9 +5,11 @@ import com.google.gson.*;
 //import com.vacinas.core.util.StringUtil;
 import com.vacinas.model.Imunizacoes;
 import com.vacinas.service.ImunizacoesService;
+
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import spark.Request;
 import spark.Response;
@@ -20,6 +22,7 @@ public class ImunizacoesRoute {
         Spark.put("/imunizacoes/:id", alterarImunizacoes(imunizacoesService));
         Spark.delete("/imunizacoes/:id",excluirImunizacoes(imunizacoesService));
         Spark.get("/imunizacoes/paciente/:id", consultarPorIdPaciente(imunizacoesService));
+        Spark.get("/imunizacoes/", consultarTodasImunizacoes(imunizacoesService));
     }
 
     public static class LocalDateAdapter implements JsonDeserializer<LocalDate>, JsonSerializer<LocalDate> {
@@ -34,6 +37,28 @@ public class ImunizacoesRoute {
         public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             return LocalDate.parse(json.getAsString(), formatter);
         }
+    }
+
+    private static Route consultarTodasImunizacoes(ImunizacoesService imunizacoesService) {
+        return new Route() {
+            @Override
+            public Object handle(Request request, Response response) throws Exception {
+                response.type("aplication/json");
+
+                ArrayList<Imunizacoes> listaImunizacoes = imunizacoesService.consultarTodasImunizacoes();
+                if (listaImunizacoes != null) {
+                    response.status(200);
+                    Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                        .create();
+                    return gson.toJson(listaImunizacoes);
+                } else {
+                    response.status(204); // 204 No Content
+                    return new Gson().toJson(new ArrayList<>());
+                }
+
+            }
+        };
     }
 
     private static Route consultarPorIdPaciente(ImunizacoesService imunizacoesService) {

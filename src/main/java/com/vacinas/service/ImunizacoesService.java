@@ -1,6 +1,7 @@
 package com.vacinas.service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.sql.Connection;
 
 import com.vacinas.core.config.ConexaoDAO;
@@ -10,6 +11,19 @@ import com.vacinas.model.Imunizacoes;
 public class ImunizacoesService {
     
     private Connection conexao;
+
+    public ArrayList<Imunizacoes> consultarTodasImunizacoes() {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            ImunizacoesDAO.conexao = conexao;
+            ArrayList<Imunizacoes> imunizacoes = ImunizacoesDAO.consultarTodasImunizacoes();
+            return imunizacoes;
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public Imunizacoes consultarPorIdPaciente(int idPaciente) {
         try {
