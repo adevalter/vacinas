@@ -43,15 +43,19 @@ public class PacienteRoute {
         };
     }
 
-      // Método para consultar paciente por ID
-      private static Route consultarPorId(PacienteService pacienteService) {
+    // Método para consultar paciente por ID
+    private static Route consultarPorId(PacienteService pacienteService) {
         return (Request request, Response response) -> {
             int id = Integer.parseInt(request.params(":id"));
+
             Paciente paciente = pacienteService.consultarPorId(id);
 
             if (paciente != null) {
                 response.status(200);
-                return new Gson().toJson(paciente);
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                        .create();
+                return gson.toJson(paciente);
             } else {
                 response.status(404);
                 return new Gson().toJson("{\"message\": \"Paciente não encontrado.\"}");
@@ -59,4 +63,3 @@ public class PacienteRoute {
         };
     }
 }
-
