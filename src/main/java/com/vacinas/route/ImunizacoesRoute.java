@@ -19,10 +19,27 @@ import spark.Spark;
 public class ImunizacoesRoute {
 
     public static void processarRotas(ImunizacoesService imunizacoesService) {
+        Spark.post("/imunizacoes", inserirImunizacoes(imunizacoesService));
         Spark.put("/imunizacoes/:id", alterarImunizacoes(imunizacoesService));
         Spark.delete("/imunizacoes/:id", excluirImunizacoes(imunizacoesService));
         Spark.get("/imunizacoes/paciente/:id", consultarPorIdPaciente(imunizacoesService));
         Spark.get("/imunizacoes", consultarTodasImunizacoes(imunizacoesService));
+    }
+
+    private static Route inserirImunizacoes(ImunizacoesService imunizacoesService) {
+        return new Route() {
+            @Override
+            public Object handle(Request request, Response response) throws Exception {
+                response.type("application/json");
+                Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
+                Imunizacoes imunizacoes = gson.fromJson(request.body(), Imunizacoes.class);
+                int resultado = imunizacoesService.inserirImunizacao(imunizacoes);
+                response.status(201);
+                return new Gson().toJson("{\"message\": \"Imunização inserida com sucesso. ID: " + resultado + "\"}");
+            }
+        };
     }
 
     public static class LocalDateAdapter implements JsonDeserializer<LocalDate>, JsonSerializer<LocalDate> {
@@ -39,6 +56,7 @@ public class ImunizacoesRoute {
             return LocalDate.parse(json.getAsString(), formatter);
         }
     }
+    
 
     private static Route consultarTodasImunizacoes(ImunizacoesService imunizacoesService) {
         return new Route() {

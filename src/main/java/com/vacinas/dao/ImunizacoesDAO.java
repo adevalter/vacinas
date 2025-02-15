@@ -12,6 +12,21 @@ import com.vacinas.model.Imunizacoes;
 public class ImunizacoesDAO {
     public static Connection conexao = null;
 
+    public static int inserirImunizacao(Imunizacoes imunizacoes) throws SQLException {
+        String sql = "INSERT INTO imunizacoes (id_paciente, id_dose, data_aplicacao, fabricante, lote, local_aplicacao, profissional_aplicador) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+            comando.setInt(1, imunizacoes.getIdPaciente());
+            comando.setInt(2, imunizacoes.getIdDose());
+            comando.setObject(3, imunizacoes.getDataAplicacao());
+            comando.setString(4, imunizacoes.getFabricante());
+            comando.setString(5, imunizacoes.getLote());
+            comando.setString(6, imunizacoes.getLocalAplicacao());
+            comando.setString(7, imunizacoes.getProfissionalAplicador());
+            
+            return comando.executeUpdate();
+        }
+    }
+
     public static int atualizarImunizacoes(Imunizacoes imunizacoes) throws SQLException {
 
         String sql = "UPDATE imunizacoes SET id_paciente = ?, id_dose = ?, data_aplicacao = ?, fabricante = ?, lote = ?, local_aplicacao = ?, profissional_aplicador = ? WHERE id = ? ";
