@@ -152,12 +152,12 @@ public class ImunizacoesDAO {
 
     public static int contarVacinasAtrasadas(int idPaciente) throws SQLException {
         String sql = """
-        SELECT COUNT(*) 
-        FROM calendario_vacinal cv
-        LEFT JOIN imunizacoes i ON cv.id_vacina = i.id_dose AND i.id_paciente = ?
-        JOIN pacientes p ON p.id = ?
+        SELECT COUNT(*)
+        FROM dose d
+        JOIN paciente p ON p.id = ?
+        LEFT JOIN imunizacoes i ON d.id = i.id_dose AND i.id_paciente = ?
         WHERE i.id IS NULL 
-        AND cv.idade_meses <= TIMESTAMPDIFF(MONTH, p.data_nascimento, CURDATE())
+        AND d.idade_recomendada_aplicacao <= TIMESTAMPDIFF(MONTH, p.data_nascimento, CURDATE())
     """;
 
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
@@ -171,11 +171,12 @@ public class ImunizacoesDAO {
         return 0;
     }
 
+
     public static int contarVacinasAcimaIdade(int idadeMeses) throws SQLException {
         String sql = """
         SELECT COUNT(*) 
-        FROM calendario_vacinal 
-        WHERE idade_meses > ?
+        FROM dose 
+        WHERE idade_recomendada_aplicacao > ?
     """;
 
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
@@ -188,20 +189,20 @@ public class ImunizacoesDAO {
         return 0;
     }
 
+
     public static int contarVacinasProximoMes(int idPaciente) throws SQLException {
         String sql = """
-        SELECT COUNT(*) 
-        FROM calendario_vacinal cv
-        JOIN pacientes p ON p.id = ?
-        LEFT JOIN imunizacoes i ON cv.id_vacina = i.id_dose AND i.id_paciente = ?
-        WHERE i.id IS NULL 
-        AND cv.idade_meses BETWEEN TIMESTAMPDIFF(MONTH, p.data_nascimento, CURDATE()) + 1
-                             AND TIMESTAMPDIFF(MONTH, p.data_nascimento, CURDATE()) + 2
+        SELECT COUNT(*)
+        FROM dose d
+        JOIN vacinas v ON d.id_vacina = v.id
+        JOIN paciente p ON p.id = ?
+        LEFT JOIN imunizacoes i ON d.id = i.id_dose AND i.id_paciente = p.id
+        WHERE i.id IS NULL
+        AND d.idade_recomendada_aplicacao = TIMESTAMPDIFF(MONTH, p.data_nascimento, CURDATE()) + 1
     """;
 
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
             comando.setInt(1, idPaciente);
-            comando.setInt(2, idPaciente);
             ResultSet resultado = comando.executeQuery();
             if (resultado.next()) {
                 return resultado.getInt(1);
