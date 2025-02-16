@@ -1,9 +1,9 @@
 package com.vacinas.service;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.sql.Connection;
 
 import com.vacinas.core.config.ConexaoDAO;
 import com.vacinas.dao.ImunizacoesDAO;
@@ -77,6 +77,7 @@ public class ImunizacoesService {
         return 0;
     }
 
+
     public int contarVacinasPorPaciente(int idPaciente) {
         try {
             this.conexao = ConexaoDAO.getConexao();
@@ -141,6 +142,19 @@ public class ImunizacoesService {
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    public boolean deletarPorPaciente(int idPaciente) {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            ImunizacoesDAO.conexao = conexao;
+            return ImunizacoesDAO.deletarPorPaciente(idPaciente);
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

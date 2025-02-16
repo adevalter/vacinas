@@ -1,10 +1,5 @@
 package com.vacinas.route;
 
-import com.google.gson.*;
-//import com.vacinas.core.util.StringUtil;
-import com.vacinas.model.Imunizacoes;
-import com.vacinas.service.ImunizacoesService;
-
 import java.lang.reflect.Type;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
@@ -12,6 +7,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.vacinas.model.Imunizacoes;
+import com.vacinas.service.ImunizacoesService;
 
 import spark.Request;
 import spark.Response;
@@ -32,6 +39,7 @@ public class ImunizacoesRoute {
         Spark.get("/estatisticas/imunizacoes_acima_idade/:meses", contarVacinasAcimaIdade(imunizacoesService));
         Spark.get("/estatisticas/proximas_imunizacoes/paciente/:id", contarVacinasProximoMes(imunizacoesService));
         Spark.get("/imunizacao/paciente/:id/aplicacao/:dt_ini/:dt_fim", consultarImunizacoesPorPacienteEIntervalo(imunizacoesService));
+        Spark.delete("/imunizacoes/paciente/:id", deletarPaciente(imunizacoesService));
     }
 
     private static Route inserirImunizacoes(ImunizacoesService imunizacoesService) {
@@ -312,6 +320,22 @@ public class ImunizacoesRoute {
             } catch (Exception e) {
                 response.status(500);
                 return new Gson().toJson(Map.of("erro", "Erro ao processar a solicitação."));
+            }
+        };
+    }
+
+    private static Route deletarPaciente(ImunizacoesService imunizacoesService) {
+        return (Request request, Response response) -> {
+            response.type("application/json");
+            int id = Integer.parseInt(request.params(":id"));
+            boolean deletado = imunizacoesService.deletarPorPaciente(id);
+
+            if (deletado) {
+                response.status(200);
+                return new Gson().toJson("{\"message\": \"Paciente deletado com sucesso.\"}");
+            } else {
+                response.status(500);
+                return new Gson().toJson("{\"message\": \"Erro ao deletar paciente.\"}");
             }
         };
     }
