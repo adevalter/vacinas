@@ -111,6 +111,7 @@ public class ImunizacoesService {
         return 0;
     }
 
+
     public int contarVacinasAcimaIdade(int idadeMeses) {
         try {
             this.conexao = ConexaoDAO.getConexao();
@@ -121,6 +122,7 @@ public class ImunizacoesService {
         }
         return 0;
     }
+
 
     public int contarVacinasProximoMes(int idPaciente) {
         try {

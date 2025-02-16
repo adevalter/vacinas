@@ -138,34 +138,34 @@ public class ImunizacoesDAO {
         return null;
     }
 
-    public int contarVacinasAtrasadas(int idPaciente) throws SQLException {
+    public static int contarVacinasAtrasadas(int idPaciente) throws SQLException {
         String sql = """
-        SELECT COUNT(*) 
+        SELECT COUNT(*)
         FROM dose d
         JOIN paciente p ON p.id = ?
-        LEFT JOIN imunizacoes i ON d.id = i.id_dose AND i.id_paciente = p.id
+        LEFT JOIN imunizacoes i ON d.id = i.id_dose AND i.id_paciente = ?
         WHERE i.id IS NULL 
         AND d.idade_recomendada_aplicacao <= TIMESTAMPDIFF(MONTH, p.data_nascimento, CURDATE())
-        """;
+    """;
 
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
             comando.setInt(1, idPaciente);
+            comando.setInt(2, idPaciente);
             ResultSet resultado = comando.executeQuery();
             if (resultado.next()) {
                 return resultado.getInt(1);
             }
-        } catch (SQLException e) {
-            throw new SQLException("Erro ao contar vacinas atrasadas para o paciente.", e);
         }
         return 0;
     }
 
-    public int contarVacinasAcimaIdade(int idadeMeses) throws SQLException {
+
+    public static int contarVacinasAcimaIdade(int idadeMeses) throws SQLException {
         String sql = """
         SELECT COUNT(*) 
         FROM dose 
         WHERE idade_recomendada_aplicacao > ?
-        """;
+    """;
 
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
             comando.setInt(1, idadeMeses);
@@ -173,11 +173,10 @@ public class ImunizacoesDAO {
             if (resultado.next()) {
                 return resultado.getInt(1);
             }
-        } catch (SQLException e) {
-            throw new SQLException("Erro ao contar vacinas com recomendação acima da idade informada.", e);
         }
         return 0;
     }
+
 
     public static int contarVacinasProximoMes(int idPaciente) throws SQLException {
         String sql = """
