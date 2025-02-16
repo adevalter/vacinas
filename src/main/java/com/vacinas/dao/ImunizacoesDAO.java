@@ -1,10 +1,15 @@
 package com.vacinas.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.vacinas.model.Imunizacoes;
+import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
 
 public class ImunizacoesDAO {
     public static Connection conexao = null;
@@ -55,19 +60,23 @@ public class ImunizacoesDAO {
         }
     }
 
-    public static ArrayList<Imunizacoes> consultarTodasImunizacoes() throws SQLException {
-        ArrayList<Imunizacoes> listaImunizacoes = new ArrayList<Imunizacoes>();
+    public static ArrayList<ResultadoImunizacaoPorIdPaciente> consultarTodasImunizacoes() throws SQLException {
+        ArrayList<ResultadoImunizacaoPorIdPaciente> listaImunizacoes = new ArrayList<ResultadoImunizacaoPorIdPaciente>();
 
-        String sql = "Select * from imunizacoes";
+        String sql = """
+                SELECT i.id, p.nome, d.dose, i.data_aplicacao, i.fabricante, i.lote, i.local_aplicacao, i.profissional_aplicador
+                FROM imunizacoes i inner join paciente p on p.id = i.id_paciente
+                inner join dose d on d.id = i.id_dose
+                """;
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
 
             ResultSet resultado = comando.executeQuery();
             while (resultado.next()) {
                 LocalDate dataAplicacao = resultado.getDate("data_aplicacao").toLocalDate();
-                listaImunizacoes.add(new Imunizacoes(
+                listaImunizacoes.add(new ResultadoImunizacaoPorIdPaciente(
                     resultado.getInt("id"),
-                    resultado.getInt("id_paciente"),
-                    resultado.getInt("id_dose"),
+                    resultado.getString("nome"),
+                    resultado.getString("dose"),
                     dataAplicacao,
                     resultado.getString("fabricante"), 
                     resultado.getString("lote"),
@@ -78,8 +87,8 @@ public class ImunizacoesDAO {
         return listaImunizacoes;
     }
     
-    public static ArrayList<Imunizacoes> consultarPorIdPaciente(int idPaciente) throws SQLException {
-        ArrayList<Imunizacoes> listaImunizacoes = new ArrayList<Imunizacoes>();
+    public static ArrayList<ResultadoImunizacaoPorIdPaciente> consultarPorIdPaciente(int idPaciente) throws SQLException {
+        ArrayList<ResultadoImunizacaoPorIdPaciente> listaImunizacoes = new ArrayList<ResultadoImunizacaoPorIdPaciente>();
 
         String sql = """
                 SELECT i.id, p.nome, d.dose, i.data_aplicacao, i.fabricante, i.lote, i.local_aplicacao, i.profissional_aplicador
@@ -93,10 +102,10 @@ public class ImunizacoesDAO {
             ResultSet resultado = comando.executeQuery();
             while (resultado.next()) {
                 LocalDate dataAplicacao = resultado.getDate("data_aplicacao").toLocalDate();
-                listaImunizacoes.add(new Imunizacoes(
+                listaImunizacoes.add(new ResultadoImunizacaoPorIdPaciente(
                     resultado.getInt("id"),
-                    resultado.getInt("id_paciente"),
-                    resultado.getInt("id_dose"),
+                    resultado.getString("nome"),
+                    resultado.getString("dose"),
                     dataAplicacao,
                     resultado.getString("fabricante"), 
                     resultado.getString("lote"),
@@ -232,4 +241,13 @@ public class ImunizacoesDAO {
         }
         return listaImunizacoes;
     }
+
+    public static boolean deletarPorPaciente(int idPaciente) throws SQLException {
+        String sql = "DELETE from imunizacoes WHERE id_paciente = ?";
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+            comando.setInt(1, idPaciente);
+            return comando.executeUpdate() > 0;
+        }
+    }
 }
+

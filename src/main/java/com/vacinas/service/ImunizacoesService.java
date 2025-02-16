@@ -1,13 +1,14 @@
 package com.vacinas.service;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.sql.Connection;
 
 import com.vacinas.core.config.ConexaoDAO;
 import com.vacinas.dao.ImunizacoesDAO;
 import com.vacinas.model.Imunizacoes;
+import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
 
 public class ImunizacoesService {
 
@@ -24,11 +25,11 @@ public class ImunizacoesService {
         return 0;
     }
 
-    public ArrayList<Imunizacoes> consultarTodasImunizacoes() {
+    public ArrayList<ResultadoImunizacaoPorIdPaciente> consultarTodasImunizacoes() {
         try {
             this.conexao = ConexaoDAO.getConexao();
             ImunizacoesDAO.conexao = conexao;
-            ArrayList<Imunizacoes> imunizacoes = ImunizacoesDAO.consultarTodasImunizacoes();
+            ArrayList<ResultadoImunizacaoPorIdPaciente> imunizacoes = ImunizacoesDAO.consultarTodasImunizacoes();
             return imunizacoes;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -37,11 +38,11 @@ public class ImunizacoesService {
         return null;
     }
 
-    public ArrayList<Imunizacoes> consultarPorIdPaciente(int idPaciente) {
+    public ArrayList<ResultadoImunizacaoPorIdPaciente> consultarPorIdPaciente(int idPaciente) {
         try {
             this.conexao = ConexaoDAO.getConexao();
             ImunizacoesDAO.conexao = conexao;
-            ArrayList<Imunizacoes> imunizacoes = ImunizacoesDAO.consultarPorIdPaciente(idPaciente);
+            ArrayList<ResultadoImunizacaoPorIdPaciente> imunizacoes = ImunizacoesDAO.consultarPorIdPaciente(idPaciente);
             return imunizacoes;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -76,6 +77,7 @@ public class ImunizacoesService {
 
         return 0;
     }
+
 
     public int contarVacinasPorPaciente(int idPaciente) {
         try {
@@ -141,6 +143,19 @@ public class ImunizacoesService {
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    public boolean deletarPorPaciente(int idPaciente) {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            ImunizacoesDAO.conexao = conexao;
+            return ImunizacoesDAO.deletarPorPaciente(idPaciente);
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }
