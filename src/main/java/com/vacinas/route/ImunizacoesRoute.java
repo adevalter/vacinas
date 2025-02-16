@@ -1,13 +1,21 @@
 package com.vacinas.route;
 
 
-import com.google.gson.*;
-//import com.vacinas.core.util.StringUtil;
-import com.vacinas.model.Imunizacoes;
-import com.vacinas.service.ImunizacoesService;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.vacinas.model.Imunizacoes;
+import com.vacinas.service.ImunizacoesService;
 
 import spark.Request;
 import spark.Response;
@@ -19,6 +27,7 @@ public class ImunizacoesRoute {
     public static void processarRotas(ImunizacoesService imunizacoesService) {
         Spark.put("/imunizacoes/:id", alterarImunizacoes(imunizacoesService));
         Spark.delete("/imunizacoes/:id",excluirImunizacoes(imunizacoesService));
+        Spark.delete("/imunizacoes/paciente/:id", excluirTodasImunizacoes(imunizacoesService));
     }
 
     public static class LocalDateAdapter implements JsonDeserializer<LocalDate>, JsonSerializer<LocalDate> {
@@ -82,4 +91,39 @@ public class ImunizacoesRoute {
 
         };
     }
+
+    private static Route excluirTodasImunizacoes(ImunizacoesService imunizacoesService) {
+        return new Route() {
+            @Override
+            public Object handle(Request request, Response response) throws Exception {
+                response.type("application/json");
+
+                int pacienteId;
+                try {
+                    pacienteId = Integer.parseInt(request.params(":id"));
+                } catch (NumberFormatException e) {
+                    response.status(400); //400 bad request
+                    return "{\"message\": \"ID do paciente inválido.\"}";
+                }
+
+                int resultado = imunizacoesService.excluirTodasImunizacoesPorPacienteId(pacienteId);
+
+                if(resultado > 0) {
+                    response.status(200); //200 ok
+                    return "{\"message\": \"Todas as imunizações do paciente com id " + pacienteId + " foram excluídas com sucesso.\"}";
+                } else {
+                    response.status(400); //400 not found
+                    return "{\"message\": \"Não foram encontradas imunizações para o paciente com id " + pacienteId + ".\"}";
+                }
+
+            }
+                
+
+        };
+            
+    }
+
 }
+
+
+
