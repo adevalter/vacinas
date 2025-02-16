@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.vacinas.model.Imunizacoes;
+import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
 
 public class ImunizacoesDAO {
     public static Connection conexao = null;
@@ -59,19 +60,23 @@ public class ImunizacoesDAO {
         }
     }
 
-    public static ArrayList<Imunizacoes> consultarTodasImunizacoes() throws SQLException {
-        ArrayList<Imunizacoes> listaImunizacoes = new ArrayList<Imunizacoes>();
+    public static ArrayList<ResultadoImunizacaoPorIdPaciente> consultarTodasImunizacoes() throws SQLException {
+        ArrayList<ResultadoImunizacaoPorIdPaciente> listaImunizacoes = new ArrayList<ResultadoImunizacaoPorIdPaciente>();
 
-        String sql = "Select * from imunizacoes";
+        String sql = """
+                SELECT i.id, p.nome, d.dose, i.data_aplicacao, i.fabricante, i.lote, i.local_aplicacao, i.profissional_aplicador
+                FROM imunizacoes i inner join paciente p on p.id = i.id_paciente
+                inner join dose d on d.id = i.id_dose
+                """;
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
 
             ResultSet resultado = comando.executeQuery();
             while (resultado.next()) {
                 LocalDate dataAplicacao = resultado.getDate("data_aplicacao").toLocalDate();
-                listaImunizacoes.add(new Imunizacoes(
+                listaImunizacoes.add(new ResultadoImunizacaoPorIdPaciente(
                     resultado.getInt("id"),
-                    resultado.getInt("id_paciente"),
-                    resultado.getInt("id_dose"),
+                    resultado.getString("nome"),
+                    resultado.getString("dose"),
                     dataAplicacao,
                     resultado.getString("fabricante"), 
                     resultado.getString("lote"),
@@ -82,26 +87,33 @@ public class ImunizacoesDAO {
         return listaImunizacoes;
     }
     
-    public static Imunizacoes consultarPorIdPaciente(int idPaciente) throws SQLException {
-        Imunizacoes imunizacoes = null;
-        String sql = "Select * from imunizacoes where id_paciente = ?";
+    public static ArrayList<ResultadoImunizacaoPorIdPaciente> consultarPorIdPaciente(int idPaciente) throws SQLException {
+        ArrayList<ResultadoImunizacaoPorIdPaciente> listaImunizacoes = new ArrayList<ResultadoImunizacaoPorIdPaciente>();
+
+        String sql = """
+                SELECT i.id, p.nome, d.dose, i.data_aplicacao, i.fabricante, i.lote, i.local_aplicacao, i.profissional_aplicador
+                FROM imunizacoes i inner join paciente p on p.id = i.id_paciente
+                inner join dose d on d.id = i.id_dose 
+                where i.id_paciente = ?
+                """;
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+
             comando.setInt(1, idPaciente);
             ResultSet resultado = comando.executeQuery();
-            if (resultado.next()) {
+            while (resultado.next()) {
                 LocalDate dataAplicacao = resultado.getDate("data_aplicacao").toLocalDate();
-                imunizacoes = new Imunizacoes(
+                listaImunizacoes.add(new ResultadoImunizacaoPorIdPaciente(
                     resultado.getInt("id"),
-                    resultado.getInt("id_paciente"),
-                    resultado.getInt("id_dose"),
+                    resultado.getString("nome"),
+                    resultado.getString("dose"),
                     dataAplicacao,
                     resultado.getString("fabricante"), 
                     resultado.getString("lote"),
                     resultado.getString("local_aplicacao"),
-                    resultado.getString("profissional_aplicador"));
+                    resultado.getString("profissional_aplicador")));
             }
         }
-        return imunizacoes;
+        return listaImunizacoes;
     }
     public static int contarVacinasPorPaciente(int idPaciente) throws SQLException {
         String sql = "SELECT COUNT(*) FROM imunizacoes WHERE id_paciente = ?";
@@ -182,7 +194,7 @@ public class ImunizacoesDAO {
         String sql = """
         SELECT COUNT(*)
         FROM dose d
-        JOIN vacina v ON d.id_vacina = v.id
+        JOIN vacinas v ON d.id_vacina = v.id
         JOIN paciente p ON p.id = ?
         LEFT JOIN imunizacoes i ON d.id = i.id_dose AND i.id_paciente = p.id
         WHERE i.id IS NULL
@@ -191,7 +203,6 @@ public class ImunizacoesDAO {
 
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
             comando.setInt(1, idPaciente);
-            comando.setInt(2, idPaciente);
             ResultSet resultado = comando.executeQuery();
             if (resultado.next()) {
                 return resultado.getInt(1);

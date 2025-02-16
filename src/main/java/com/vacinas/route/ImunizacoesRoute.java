@@ -19,6 +19,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.vacinas.core.util.StringUtil;
 import com.vacinas.model.Imunizacoes;
+import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
 import com.vacinas.service.ImunizacoesService;
 
 import spark.Request;
@@ -81,7 +82,7 @@ public class ImunizacoesRoute {
             public Object handle(Request request, Response response) throws Exception {
                 response.type("aplication/json");
 
-                ArrayList<Imunizacoes> listaImunizacoes = imunizacoesService.consultarTodasImunizacoes();
+                ArrayList<ResultadoImunizacaoPorIdPaciente> listaImunizacoes = imunizacoesService.consultarTodasImunizacoes();
                 if (listaImunizacoes != null) {
                     response.status(200);
                     Gson gson = new GsonBuilder()
@@ -105,7 +106,7 @@ public class ImunizacoesRoute {
 
                 int idPaciente = Integer.parseInt(request.params("id"));
 
-                Imunizacoes imunizacoes = imunizacoesService.consultarPorIdPaciente(idPaciente);
+                ArrayList<ResultadoImunizacaoPorIdPaciente> imunizacoes = imunizacoesService.consultarPorIdPaciente(idPaciente);
                 if (imunizacoes != null) {
                     response.status(200);
                     Gson gson = new GsonBuilder()
@@ -115,7 +116,7 @@ public class ImunizacoesRoute {
 
                 } else {
                     response.status(404);
-                    return StringUtil.retornoJsonMensagem("Não existe imunização para paciente com ID" + idPaciente);
+                    return StringUtil.retornoJsonMensagem("Não existe imunização para paciente com ID " + idPaciente);
                 }
 
             }
@@ -137,10 +138,10 @@ public class ImunizacoesRoute {
                     int resultado = imunizacoesService.alterarImunizacoes(imunizacoes);
                     if (resultado > 0) {
                         response.status(200); // 200 ok
-                        return StringUtil.retornoJsonMensagem("Imunização com id" + id + " foi atulizado com sucesso.");
+                        return StringUtil.retornoJsonMensagem("Imunização com ID " + id + " foi atulizado com sucesso.");
                     } else {
                         response.status(209); // 404 not found
-                        return StringUtil.retornoJsonMensagem("A Imunização com id" + id + " não foi encontrada.");
+                        return StringUtil.retornoJsonMensagem("A Imunização com ID " + id + " não foi encontrada.");
                     }
                 } catch (SQLIntegrityConstraintViolationException e) {
                     response.status(209); // 404 not found
@@ -165,11 +166,11 @@ public class ImunizacoesRoute {
                 int resultado = imunizacoesService.excluir(id);
                 if (resultado > 0) {
                     response.status(200); // 200 Ok
-                    return StringUtil.retornoJsonMensagem("Imunização com id" + id + " foi excluida com sucesso.");
+                    return StringUtil.retornoJsonMensagem("Imunização com ID " + id + " foi excluida com sucesso.");
                 
                 } else {
                     response.status(209); // 404 Not Found
-                    return StringUtil.retornoJsonMensagem("A imunização com id" + id + " não foi encontrada.");
+                    return StringUtil.retornoJsonMensagem("A imunização com ID " + id + " não foi encontrada.");
                 }
 
             }
