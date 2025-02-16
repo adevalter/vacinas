@@ -1,6 +1,10 @@
 package com.vacinas.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -225,4 +229,13 @@ public class ImunizacoesDAO {
         }
         return listaImunizacoes;
     }
+
+    public static boolean deletarPorPaciente(int idPaciente) throws SQLException {
+        String sql = "DELETE from imunizacoes WHERE id_paciente = ?";
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+            comando.setInt(1, idPaciente);
+            return comando.executeUpdate() > 0;
+        }
+    }
 }
+
