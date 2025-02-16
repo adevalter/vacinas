@@ -250,6 +250,7 @@ public class ImunizacoesRoute {
         };
     }
 
+
     private static Route contarVacinasAcimaIdade(ImunizacoesService imunizacoesService) {
         return (Request request, Response response) -> {
             response.type("application/json");
@@ -272,6 +273,7 @@ public class ImunizacoesRoute {
             }
         };
     }
+
     private static Route contarVacinasProximoMes(ImunizacoesService imunizacoesService) {
         return (Request request, Response response) -> {
             response.type("application/json");
