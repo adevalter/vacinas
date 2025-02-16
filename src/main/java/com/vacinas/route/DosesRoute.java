@@ -1,5 +1,5 @@
 package com.vacinas.route;
 
-public class DocesRoute {
+public class DosesRoute {
 
 }

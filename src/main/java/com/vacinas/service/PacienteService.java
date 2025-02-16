@@ -2,11 +2,12 @@ package com.vacinas.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.vacinas.core.config.ConexaoDAO;
 import com.vacinas.dao.PacienteDAO;
-
+import com.vacinas.model.ConsultaPaciente;
 import com.vacinas.model.Paciente;
 
 public class PacienteService {
@@ -24,7 +25,7 @@ public class PacienteService {
         }
     }
 
-    public Paciente consultarPorId(int id) {
+    public ConsultaPaciente consultarPorId(int id) {
         try {
             this.conexao = ConexaoDAO.getConexao();
             PacienteDAO.conexao = conexao;
@@ -35,14 +36,13 @@ public class PacienteService {
         return null;
     }
 
-    public Paciente create(Paciente paciente) {
+    public Paciente create(Paciente paciente) throws SQLException {
         try {
             this.conexao = ConexaoDAO.getConexao();
             PacienteDAO.conexao = this.conexao;
             return PacienteDAO.criar(paciente);
         } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+            throw e;
         }
     }
 
@@ -57,14 +57,14 @@ public class PacienteService {
         }
     }
 
-    public List<Paciente> buscarTodos() {
+    public ArrayList<ConsultaPaciente> buscarTodos() {
         try {
             this.conexao = ConexaoDAO.getConexao();
             PacienteDAO.conexao = this.conexao;
             return PacienteDAO.buscarTodos();
         } catch (SQLException e) {
             e.printStackTrace();
-            return List.of();
+            return new ArrayList<ConsultaPaciente>();
         }
     }
 }

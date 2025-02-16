@@ -1,6 +1,7 @@
 package com.vacinas.route;
 
 import com.google.gson.*;
+import com.vacinas.core.util.StringUtil;
 //import com.vacinas.core.util.StringUtil;
 import com.vacinas.model.Imunizacoes;
 import com.vacinas.service.ImunizacoesService;
@@ -45,7 +46,7 @@ public class ImunizacoesRoute {
                 Imunizacoes imunizacoes = gson.fromJson(request.body(), Imunizacoes.class);
                 int resultado = imunizacoesService.inserirImunizacao(imunizacoes);
                 response.status(201);
-                return new Gson().toJson("{\"message\": \"Imunização inserida com sucesso. ID: " + resultado + "\"}");
+                return StringUtil.retornoJsonMensagem("Imunização inserida com sucesso. ID:" + resultado);
             }
         };
     }
@@ -106,7 +107,7 @@ public class ImunizacoesRoute {
 
                 } else {
                     response.status(404);
-                    return "{\"message\": \"Não existe imunização para paciente com ID " + idPaciente + ".\"}";
+                    return StringUtil.retornoJsonMensagem("Não existe imunização para paciente com ID" + idPaciente);
                 }
 
             }
@@ -128,18 +129,18 @@ public class ImunizacoesRoute {
                     int resultado = imunizacoesService.alterarImunizacoes(imunizacoes);
                     if (resultado > 0) {
                         response.status(200); // 200 ok
-                        return "{\"message\": \"Imunização com id " + id + " foi atulizado com sucesso.\"}";
+                        return StringUtil.retornoJsonMensagem("Imunização com id" + id + " foi atulizado com sucesso.");
                     } else {
                         response.status(209); // 404 not found
-                        return "{\"message\": \"A Imunização com id " + id + " não foi encontrado.\"}";
+                        return StringUtil.retornoJsonMensagem("A Imunização com id" + id + " não foi encontrada.");
                     }
                 } catch (SQLIntegrityConstraintViolationException e) {
                     response.status(209); // 404 not found
+                    return StringUtil.retornoJsonMensagem("Falha ao tentar alterar paciente já tomou essa dose.");
 
-                    return "{\"message\": \"Falha ao tentar anterar paciente já tomou essa dose. \"}";
                 } catch (Exception e) {
                     response.status(209); // 404 not found
-                    return "{\"message\": \"Falha ao tentar anterar por favor revisar dados \"}";
+                    return StringUtil.retornoJsonMensagem("Falha ao tentar alterar por favor revisar dados.");
                 }
 
             }
@@ -156,11 +157,11 @@ public class ImunizacoesRoute {
                 int resultado = imunizacoesService.excluir(id);
                 if (resultado > 0) {
                     response.status(200); // 200 Ok
-                    return "{\"message\": \"Imunização com id " + id + " foi excluida com sucesso.\"}";
+                    return StringUtil.retornoJsonMensagem("Imunização com id" + id + " foi excluida com sucesso.");
+                
                 } else {
-
                     response.status(209); // 404 Not Found
-                    return "{\"message\": \"A imunização com id " + id + " não foi encontrado.\"}";
+                    return StringUtil.retornoJsonMensagem("A imunização com id" + id + " não foi encontrada.");
                 }
 
             }
