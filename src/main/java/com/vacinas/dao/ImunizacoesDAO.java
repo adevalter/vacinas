@@ -78,15 +78,22 @@ public class ImunizacoesDAO {
         return listaImunizacoes;
     }
     
-    public static Imunizacoes consultarPorIdPaciente(int idPaciente) throws SQLException {
-        Imunizacoes imunizacoes = null;
-        String sql = "Select * from imunizacoes where id_paciente = ?";
+    public static ArrayList<Imunizacoes> consultarPorIdPaciente(int idPaciente) throws SQLException {
+        ArrayList<Imunizacoes> listaImunizacoes = new ArrayList<Imunizacoes>();
+
+        String sql = """
+                SELECT i.id, p.nome, d.dose, i.data_aplicacao, i.fabricante, i.lote, i.local_aplicacao, i.profissional_aplicador
+                FROM imunizacoes i inner join paciente p on p.id = i.id_paciente
+                inner join dose d on d.id = i.id_dose 
+                where i.id_paciente = ?
+                """;
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+
             comando.setInt(1, idPaciente);
             ResultSet resultado = comando.executeQuery();
-            if (resultado.next()) {
+            while (resultado.next()) {
                 LocalDate dataAplicacao = resultado.getDate("data_aplicacao").toLocalDate();
-                imunizacoes = new Imunizacoes(
+                listaImunizacoes.add(new Imunizacoes(
                     resultado.getInt("id"),
                     resultado.getInt("id_paciente"),
                     resultado.getInt("id_dose"),
@@ -94,10 +101,10 @@ public class ImunizacoesDAO {
                     resultado.getString("fabricante"), 
                     resultado.getString("lote"),
                     resultado.getString("local_aplicacao"),
-                    resultado.getString("profissional_aplicador"));
+                    resultado.getString("profissional_aplicador")));
             }
         }
-        return imunizacoes;
+        return listaImunizacoes;
     }
     public static int contarVacinasPorPaciente(int idPaciente) throws SQLException {
         String sql = "SELECT COUNT(*) FROM imunizacoes WHERE id_paciente = ?";

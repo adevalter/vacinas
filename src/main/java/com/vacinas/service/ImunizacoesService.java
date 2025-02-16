@@ -37,11 +37,11 @@ public class ImunizacoesService {
         return null;
     }
 
-    public Imunizacoes consultarPorIdPaciente(int idPaciente) {
+    public ArrayList<Imunizacoes> consultarPorIdPaciente(int idPaciente) {
         try {
             this.conexao = ConexaoDAO.getConexao();
             ImunizacoesDAO.conexao = conexao;
-            Imunizacoes imunizacoes = ImunizacoesDAO.consultarPorIdPaciente(idPaciente);
+            ArrayList<Imunizacoes> imunizacoes = ImunizacoesDAO.consultarPorIdPaciente(idPaciente);
             return imunizacoes;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
