@@ -7,11 +7,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import com.vacinas.model.Paciente;
 
+
+import com.vacinas.model.Dose;
 import com.vacinas.model.Imunizacoes;
 
 public class ImunizacoesDAO {
-    public static Connection conexao = null;
+    public static Connection conexao;
+
+    static {
+        try {
+            conexao = ConexaoDAO.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException("❌ Erro ao conectar ao banco!", e);
+        }
+    }
 
     public static int inserirImunizacao(Imunizacoes imunizacoes) throws SQLException {
         String sql = "INSERT INTO imunizacoes (id_paciente, id_dose, data_aplicacao, fabricante, lote, local_aplicacao, profissional_aplicador) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -23,7 +34,7 @@ public class ImunizacoesDAO {
             comando.setString(5, imunizacoes.getLote());
             comando.setString(6, imunizacoes.getLocalAplicacao());
             comando.setString(7, imunizacoes.getProfissionalAplicador());
-            
+
             return comando.executeUpdate();
         }
     }
@@ -40,7 +51,7 @@ public class ImunizacoesDAO {
             comando.setString(6, imunizacoes.getLocalAplicacao().toString());
             comando.setString(7, imunizacoes.getProfissionalAplicador());
             comando.setInt(8, imunizacoes.getId());
-            
+
 
             int linhasAlteradas = comando.executeUpdate();
             return linhasAlteradas;
@@ -73,7 +84,7 @@ public class ImunizacoesDAO {
                     resultado.getInt("id_paciente"),
                     resultado.getInt("id_dose"),
                     dataAplicacao,
-                    resultado.getString("fabricante"), 
+                    resultado.getString("fabricante"),
                     resultado.getString("lote"),
                     resultado.getString("local_aplicacao"),
                     resultado.getString("profissional_aplicador")));
@@ -81,7 +92,7 @@ public class ImunizacoesDAO {
         }
         return listaImunizacoes;
     }
-    
+
     public static Imunizacoes consultarPorIdPaciente(int idPaciente) throws SQLException {
         Imunizacoes imunizacoes = null;
         String sql = "Select * from imunizacoes where id_paciente = ?";
@@ -95,7 +106,7 @@ public class ImunizacoesDAO {
                     resultado.getInt("id_paciente"),
                     resultado.getInt("id_dose"),
                     dataAplicacao,
-                    resultado.getString("fabricante"), 
+                    resultado.getString("fabricante"),
                     resultado.getString("lote"),
                     resultado.getString("local_aplicacao"),
                     resultado.getString("profissional_aplicador"));
@@ -239,5 +250,42 @@ public class ImunizacoesDAO {
             return comando.executeUpdate() > 0;
         }
     }
-}
 
+    public static ArrayList<Paciente> listarTodosPacientes() throws SQLException {
+        ArrayList<Paciente> pacientes = new ArrayList<>();
+        String sql = "SELECT id, nome FROM pacientes";
+        PreparedStatement stmt = conexao.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            Paciente paciente = new Paciente(rs.getInt("id"), rs.getString("nome"));
+            pacientes.add(paciente);
+        }
+        return pacientes;
+    }
+
+    public static ArrayList<Dose> listarTodasDoses() throws SQLException {
+        ArrayList<Dose> doses = new ArrayList<>();
+        String sql = "SELECT id, id_vacina, dose, idade_recomendada_aplicacao FROM dose";
+
+        System.out.println("Executando SQL: " + sql);
+
+        try (PreparedStatement stmt = conexao.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Dose dose = new Dose();
+                dose.setId(rs.getInt("id"));
+                dose.setIdVacina(rs.getInt("id_vacina"));
+                dose.setDose(rs.getString("dose"));
+                dose.setIdadeRecomendadaAplicacao(rs.getInt("idade_recomendada_aplicacao"));
+                doses.add(dose);
+            }
+        }
+
+        System.out.println("Total de doses encontradas: " + doses.size());
+        return doses;
+    }
+
+
+
+}

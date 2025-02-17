@@ -20,6 +20,7 @@ import com.google.gson.JsonSerializer;
 import com.vacinas.core.util.StringUtil;
 import com.vacinas.model.Imunizacoes;
 import com.vacinas.service.ImunizacoesService;
+import com.vacinas.model.Dose;
 
 import spark.Request;
 import spark.Response;
@@ -34,6 +35,19 @@ public class ImunizacoesRoute {
         Spark.delete("/imunizacoes/:id", excluirImunizacoes(imunizacoesService));
         Spark.get("/imunizacoes/paciente/:id", consultarPorIdPaciente(imunizacoesService));
         Spark.get("/imunizacoes", consultarTodasImunizacoes(imunizacoesService));
+
+        Spark.get("/doses", (Request req, Response res) -> {
+            res.type("application/json");
+            try {
+                ArrayList<Dose> doses = imunizacoesService.listarTodasDoses();
+                return new Gson().toJson(doses);
+            } catch (Exception e) {
+                e.printStackTrace();
+                res.status(500);
+                return new Gson().toJson(Map.of("erro", "Erro ao buscar doses: " + e.getMessage()));
+            }
+        });
+
         Spark.get("/estatisticas/imunizacoes/paciente/:id", contarVacinasPorPaciente(imunizacoesService));
         Spark.get("/imunizacao/:id", consultarImunizacaoPorId(imunizacoesService));
         Spark.get("/estatisticas/imunizacoes_atrasadas/paciente/:id", contarVacinasAtrasadas(imunizacoesService));

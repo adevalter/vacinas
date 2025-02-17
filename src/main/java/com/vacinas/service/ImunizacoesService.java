@@ -7,7 +7,10 @@ import java.util.ArrayList;
 
 import com.vacinas.core.config.ConexaoDAO;
 import com.vacinas.dao.ImunizacoesDAO;
+import com.vacinas.model.Dose;
 import com.vacinas.model.Imunizacoes;
+import com.vacinas.model.Paciente;
+
 
 public class ImunizacoesService {
 
@@ -159,4 +162,23 @@ public class ImunizacoesService {
         }
     }
 
+    public ArrayList<Paciente> listarTodosPacientes() {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            return ImunizacoesDAO.listarTodosPacientes();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public ArrayList<Dose> listarTodasDoses() {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            return ImunizacoesDAO.listarTodasDoses();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 }
