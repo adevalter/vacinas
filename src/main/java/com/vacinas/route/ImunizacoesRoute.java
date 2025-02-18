@@ -93,7 +93,7 @@ public class ImunizacoesRoute {
         return new Route() {
             @Override
             public Object handle(Request request, Response response) throws Exception {
-                response.type("aplication/json");
+                response.type("application/json");
 
                 ArrayList<Imunizacoes> listaImunizacoes = imunizacoesService.consultarTodasImunizacoes();
                 if (listaImunizacoes != null) {
