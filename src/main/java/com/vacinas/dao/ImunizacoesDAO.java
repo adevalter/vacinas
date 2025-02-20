@@ -1,10 +1,6 @@
 package com.vacinas.dao;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import com.vacinas.model.Paciente;
@@ -24,70 +20,102 @@ public class ImunizacoesDAO {
         }
     }
 
-    public static int inserirImunizacao(Imunizacoes imunizacoes) throws SQLException {
-        String sql = "INSERT INTO imunizacoes (id_paciente, id_dose, data_aplicacao, fabricante, lote, local_aplicacao, profissional_aplicador) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
-            comando.setInt(1, imunizacoes.getIdPaciente());
-            comando.setInt(2, imunizacoes.getIdDose());
-            comando.setObject(3, imunizacoes.getDataAplicacao());
-            comando.setString(4, imunizacoes.getFabricante());
-            comando.setString(5, imunizacoes.getLote());
-            comando.setString(6, imunizacoes.getLocalAplicacao());
-            comando.setString(7, imunizacoes.getProfissionalAplicador());
+    public static boolean existeImunizacao(int idPaciente, int idDose) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM imunizacoes WHERE id_paciente = ? AND id_dose = ?";
 
-            return comando.executeUpdate();
+        try (Connection conexao = ConexaoDAO.getConnection();
+             PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setInt(1, idPaciente);
+            stmt.setInt(2, idDose);
+
+            try (ResultSet resultado = stmt.executeQuery()) {
+                return resultado.next() && resultado.getInt(1) > 0;
+            }
         }
     }
+    public static int inserirImunizacao(Imunizacoes imunizacao) throws SQLException {
+        String sql = "INSERT INTO imunizacoes (id_paciente, id_dose, data_aplicacao, fabricante, lote, local_aplicacao, profissional_aplicador) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    public static int atualizarImunizacoes(Imunizacoes imunizacoes) throws SQLException {
+        try (Connection conexao = ConexaoDAO.getConnection();
+             PreparedStatement stmt = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-        String sql = "UPDATE imunizacoes SET id_paciente = ?, id_dose = ?, data_aplicacao = ?, fabricante = ?, lote = ?, local_aplicacao = ?, profissional_aplicador = ? WHERE id = ? ";
-        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
-            comando.setInt(1, imunizacoes.getIdPaciente());
-            comando.setInt(2, imunizacoes.getIdDose());
-            comando.setObject(3, imunizacoes.getDataAplicacao());
-            comando.setString(4, imunizacoes.getFabricante());
-            comando.setString(5, imunizacoes.getLote());
-            comando.setString(6, imunizacoes.getLocalAplicacao().toString());
-            comando.setString(7, imunizacoes.getProfissionalAplicador());
-            comando.setInt(8, imunizacoes.getId());
+            stmt.setInt(1, imunizacao.getIdPaciente());
+            stmt.setInt(2, imunizacao.getIdDose());
 
+            if (imunizacao.getDataAplicacao() != null) {
+                stmt.setDate(3, Date.valueOf(imunizacao.getDataAplicacao()));
+            } else {
+                throw new IllegalArgumentException("Data de aplicação não pode ser nula.");
+            }
 
-            int linhasAlteradas = comando.executeUpdate();
-            return linhasAlteradas;
+            stmt.setString(4, imunizacao.getFabricante());
+            stmt.setString(5, imunizacao.getLote());
+            stmt.setString(6, imunizacao.getLocalAplicacao());
+            stmt.setString(7, imunizacao.getProfissionalAplicador());
+
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    public static int atualizarImunizacoes(Imunizacoes imunizacao) throws SQLException {
+        String sql = "UPDATE imunizacoes SET id_paciente = ?, id_dose = ?, data_aplicacao = ?, fabricante = ?, lote = ?, local_aplicacao = ?, profissional_aplicador = ? WHERE id = ?";
+
+        try (Connection conexao = ConexaoDAO.getConnection();
+             PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setInt(1, imunizacao.getIdPaciente());
+            stmt.setInt(2, imunizacao.getIdDose());
+            stmt.setDate(3, Date.valueOf(imunizacao.getDataAplicacao()));
+            stmt.setString(4, imunizacao.getFabricante());
+            stmt.setString(5, imunizacao.getLote());
+            stmt.setString(6, imunizacao.getLocalAplicacao());
+            stmt.setString(7, imunizacao.getProfissionalAplicador());
+            stmt.setInt(8, imunizacao.getId());
+
+            return stmt.executeUpdate();
         }
     }
 
     public static int excluirImunizacoes(int id) throws SQLException {
-        String sql = "Delete from imunizacoes where id = ?";
-        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
-            comando.setInt(1, id);
-            var resultado = comando.executeUpdate();
-            return resultado;
-        } catch (Exception e) {
-            conexao.rollback();
-            throw e;
+        String sql = "DELETE FROM imunizacoes WHERE id = ?";
+
+        try (Connection conexao = ConexaoDAO.getConnection();
+             PreparedStatement stmt = conexao.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            return stmt.executeUpdate();
         }
     }
 
     public static ArrayList<Imunizacoes> consultarTodasImunizacoes() throws SQLException {
-        ArrayList<Imunizacoes> listaImunizacoes = new ArrayList<Imunizacoes>();
+        ArrayList<Imunizacoes> listaImunizacoes = new ArrayList<>();
+        String sql = "SELECT * FROM imunizacoes";
 
-        String sql = "Select * from imunizacoes";
-        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+        try (Connection conexao = ConexaoDAO.getConnection();
+             PreparedStatement comando = conexao.prepareStatement(sql);
+             ResultSet resultado = comando.executeQuery()) {
 
-            ResultSet resultado = comando.executeQuery();
             while (resultado.next()) {
                 LocalDate dataAplicacao = resultado.getDate("data_aplicacao").toLocalDate();
                 listaImunizacoes.add(new Imunizacoes(
-                    resultado.getInt("id"),
-                    resultado.getInt("id_paciente"),
-                    resultado.getInt("id_dose"),
-                    dataAplicacao,
-                    resultado.getString("fabricante"),
-                    resultado.getString("lote"),
-                    resultado.getString("local_aplicacao"),
-                    resultado.getString("profissional_aplicador")));
+                        resultado.getInt("id"),
+                        resultado.getInt("id_paciente"),
+                        resultado.getInt("id_dose"),
+                        dataAplicacao,
+                        resultado.getString("fabricante"),
+                        resultado.getString("lote"),
+                        resultado.getString("local_aplicacao"),
+                        resultado.getString("profissional_aplicador")
+                ));
             }
         }
         return listaImunizacoes;
@@ -157,20 +185,21 @@ public class ImunizacoesDAO {
         LEFT JOIN imunizacoes i ON d.id = i.id_dose AND i.id_paciente = ?
         WHERE i.id IS NULL 
         AND d.idade_recomendada_aplicacao <= TIMESTAMPDIFF(MONTH, p.data_nascimento, CURDATE())
-    """;
+        """;
 
-        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+        try (Connection conexao = ConexaoDAO.getConnection();
+             PreparedStatement comando = conexao.prepareStatement(sql)) {
+
             comando.setInt(1, idPaciente);
             comando.setInt(2, idPaciente);
-            ResultSet resultado = comando.executeQuery();
-            if (resultado.next()) {
-                return resultado.getInt(1);
+            try (ResultSet resultado = comando.executeQuery()) {
+                if (resultado.next()) {
+                    return resultado.getInt(1);
+                }
             }
         }
         return 0;
     }
-
-
     public static int contarVacinasAcimaIdade(int idadeMeses) throws SQLException {
         String sql = """
         SELECT COUNT(*) 
@@ -285,7 +314,5 @@ public class ImunizacoesDAO {
         System.out.println("Total de doses encontradas: " + doses.size());
         return doses;
     }
-
-
 
 }

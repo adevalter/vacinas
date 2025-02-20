@@ -13,7 +13,7 @@ public class ConexaoDAO {
     public static Connection getConnection() throws SQLException {
         if (conexao == null || conexao.isClosed()) {
             try {
-                Class.forName("com.mysql.cj.jdbc.Driver"); // 🔹 Garante que o driver está carregado
+                Class.forName("com.mysql.cj.jdbc.Driver");
                 conexao = DriverManager.getConnection(URL, USUARIO, SENHA);
                 System.out.println("✅ Conexão com o banco estabelecida!");
             } catch (ClassNotFoundException e) {

@@ -4,6 +4,7 @@ com\vacinas\core\config\ConexaoDAO.class
 com\vacinas\route\VacinaRoute.class
 com\vacinas\route\ImunizacoesRoute$5.class
 com\vacinas\route\ImunizacoesRoute$1.class
+com\vacinas\model\ResultadoImunizacaoPorIdPaciente.class
 com\vacinas\service\ImunizacoesService.class
 com\vacinas\core\config\LocalDateAdapter.class
 com\vacinas\route\ImunizacoesRoute$LocalDateAdapter.class
