@@ -9,8 +9,12 @@ import com.vacinas.dao.ConexaoDAO;
 import com.vacinas.dao.ImunizacoesDAO;
 import com.vacinas.model.Dose;
 import com.vacinas.model.Imunizacoes;
+<<<<<<< HEAD
 import com.vacinas.model.Paciente;
 
+=======
+import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
+>>>>>>> f69027de2f4859806942ca557943d67fb12329a0
 
 public class ImunizacoesService {
 
@@ -27,12 +31,16 @@ public class ImunizacoesService {
         return 0;
     }
 
+<<<<<<< HEAD
 
     public ArrayList<Imunizacoes> consultarTodasImunizacoes() {
+=======
+    public ArrayList<ResultadoImunizacaoPorIdPaciente> consultarTodasImunizacoes() {
+>>>>>>> f69027de2f4859806942ca557943d67fb12329a0
         try {
             this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
-            ArrayList<Imunizacoes> imunizacoes = ImunizacoesDAO.consultarTodasImunizacoes();
+            ArrayList<ResultadoImunizacaoPorIdPaciente> imunizacoes = ImunizacoesDAO.consultarTodasImunizacoes();
             return imunizacoes;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -41,11 +49,11 @@ public class ImunizacoesService {
         return null;
     }
 
-    public Imunizacoes consultarPorIdPaciente(int idPaciente) {
+    public ArrayList<ResultadoImunizacaoPorIdPaciente> consultarPorIdPaciente(int idPaciente) {
         try {
             this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
-            Imunizacoes imunizacoes = ImunizacoesDAO.consultarPorIdPaciente(idPaciente);
+            ArrayList<ResultadoImunizacaoPorIdPaciente> imunizacoes = ImunizacoesDAO.consultarPorIdPaciente(idPaciente);
             return imunizacoes;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
