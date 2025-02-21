@@ -27,5 +27,5 @@ public class ResultadoDoseIdadeMaior {
   public void setIdadeRecomendadaAplicacao(int idadeRecomendadaAplicacao) {
     this.idadeRecomendadaAplicacao = idadeRecomendadaAplicacao;
   }
-  
+
 }

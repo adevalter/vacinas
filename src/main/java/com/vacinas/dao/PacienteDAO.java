@@ -2,8 +2,6 @@ package com.vacinas.dao;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
-
 import com.vacinas.enums.Sexo;
 import com.vacinas.model.ConsultaPaciente;
 import com.vacinas.model.Paciente;
@@ -60,8 +58,8 @@ public class PacienteDAO {
             if(paciente.getResponsavel()==null){
                 comando.setNull(5, java.sql.Types.INTEGER);
             } else {
-             comando.setInt(5, paciente.getResponsavel());
-            }    
+                comando.setInt(5, paciente.getResponsavel());
+            }
 
             int linhasAfetadas = comando.executeUpdate();
 

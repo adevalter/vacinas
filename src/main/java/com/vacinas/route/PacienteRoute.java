@@ -71,7 +71,7 @@ public class PacienteRoute {
     }
 
 
-     private static Route criarPaciente(PacienteService pacienteService) {
+    private static Route criarPaciente(PacienteService pacienteService) {
         return new Route() {
             @Override
             public Object handle(Request request, Response response) throws Exception {
@@ -82,23 +82,23 @@ public class PacienteRoute {
                             .create();
                     Paciente paciente = gson.fromJson(request.body(), Paciente.class);
                     Paciente novoPaciente = pacienteService.create(paciente);
-        
+
                     if (novoPaciente != null && novoPaciente.getId() > 0) {
                         response.status(201);
                         return gson.toJson(novoPaciente);
                     } else {
                         response.status(500);
                         return StringUtil.retornoJsonMensagem("Erro ao criar paciente.");
-                    }  
+                    }
                 } catch (SQLIntegrityConstraintViolationException e) {
                     response.status(209); // 404 not found
                     return StringUtil.retornoJsonMensagem("Falha ao tentar cadastrar paciente. Nome já está cadastrado.");
-                    
+
                 } catch (Exception e) {
                     response.status(209); // 404 not found
                     return StringUtil.retornoJsonMensagem("Falha ao tentar cadastrar por favor revisar dados.");
                 }
-                  
+
             }
         };
     }

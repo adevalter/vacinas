@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-
 import com.vacinas.enums.PublicoAlvo;
 import com.vacinas.model.ResultadoDoseIdadeMaior;
 import com.vacinas.model.ResultadoNaoAplicaveis;
@@ -45,11 +44,11 @@ public class VacinaDAO {
 
             while (resultado.next()) {
                 vacinas.add(new Vacina(
-                    resultado.getInt("id"),
-                    resultado.getString("vacina"),
-                    resultado.getString("descricao"),
-                    resultado.getInt("limite_aplicacao"),
-                   PublicoAlvo.valueOf( resultado.getString("publico_alvo"))
+                        resultado.getInt("id"),
+                        resultado.getString("vacina"),
+                        resultado.getString("descricao"),
+                        resultado.getInt("limite_aplicacao"),
+                        PublicoAlvo.valueOf( resultado.getString("publico_alvo"))
                 ));
             }
         } catch (SQLException e) {
@@ -73,10 +72,10 @@ public class VacinaDAO {
 
             while (resultado.next()) {
                 vacinas.add(new ResultadoVacinaIdadeMaior(
-                    resultado.getString("vacina"),
-                    resultado.getInt("limite_aplicacao"),
-                    PublicoAlvo.valueOf( resultado.getString("publico_alvo")),
-                    new ResultadoDoseIdadeMaior(resultado.getInt("id"), resultado.getString("dose"), resultado.getInt("idade_recomendada_aplicacao"))
+                        resultado.getString("vacina"),
+                        resultado.getInt("limite_aplicacao"),
+                        PublicoAlvo.valueOf( resultado.getString("publico_alvo")),
+                        new ResultadoDoseIdadeMaior(resultado.getInt("id"), resultado.getString("dose"), resultado.getInt("idade_recomendada_aplicacao"))
                 ));
             }
         } catch (SQLException e) {
@@ -93,7 +92,7 @@ public class VacinaDAO {
                 inner join dose d on d.id = i.id_dose 
                 inner join vacinas v on v.id = d.id_vacina
                 where i.id_paciente = ?
-                """; 
+                """;
 
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
             comando.setInt(1, idadePaciente);
@@ -101,10 +100,10 @@ public class VacinaDAO {
 
             while (resultado.next()) {
                 vacinas.add(new ResultadoNaoAplicaveis(
-                    resultado.getInt("id"),
-                    resultado.getString("vacina"),
-                    resultado.getString("dose"),
-                    resultado.getInt("limite_aplicacao"))
+                        resultado.getInt("id"),
+                        resultado.getString("vacina"),
+                        resultado.getString("dose"),
+                        resultado.getInt("limite_aplicacao"))
                 );
             }
         } catch (SQLException e) {
@@ -118,16 +117,16 @@ public class VacinaDAO {
         String sql = "SELECT * FROM vacinas ";
 
         try (PreparedStatement comando = conexao.prepareStatement(sql)) {
-    
+
             ResultSet resultado = comando.executeQuery();
 
             while (resultado.next()) {
                 vacinas.add(new Vacina(
-                    resultado.getInt("id"),
-                    resultado.getString("vacina"),
-                    resultado.getString("descricao"),
-                    resultado.getInt("limite_aplicacao"),
-                    PublicoAlvo.valueOf( resultado.getString("publico_alvo"))
+                        resultado.getInt("id"),
+                        resultado.getString("vacina"),
+                        resultado.getString("descricao"),
+                        resultado.getInt("limite_aplicacao"),
+                        PublicoAlvo.valueOf( resultado.getString("publico_alvo"))
                 ));
             }
         } catch (SQLException e) {

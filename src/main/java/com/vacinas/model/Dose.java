@@ -21,7 +21,7 @@ public class Dose {
         this.idadeRecomendadaAplicacao = idadeRecomendadaAplicacao;
     }
 
-    public Dose(int id, String dose) { // ✅ Construtor corrigido
+    public Dose(int id, String dose) {
         this.id = id;
         this.dose = dose;
     }

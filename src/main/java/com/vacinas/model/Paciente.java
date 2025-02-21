@@ -22,7 +22,7 @@ public class Paciente {
         this.responsavel = responsavel;
     }
 
-    public Paciente(int id, String nome) { // ✅ Construtor corrigido
+    public Paciente(int id, String nome) {
         this.id = id;
         this.nome = nome;
     }
