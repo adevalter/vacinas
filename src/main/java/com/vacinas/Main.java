@@ -45,8 +45,6 @@ public class Main {
             }
         });
 
-        // Informando o Browser que é aceito os metodos HTTP OPTIONS, GET, POST, PUT,
-        // DELETE para qualquer endereço
         Spark.before(new spark.Filter() {
             @Override
             public void handle(Request requisicaoHttp, Response respostaHttp) throws Exception {

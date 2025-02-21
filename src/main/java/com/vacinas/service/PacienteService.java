@@ -2,10 +2,12 @@ package com.vacinas.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.vacinas.core.config.ConexaoDAO;
 import com.vacinas.dao.PacienteDAO;
-
+import com.vacinas.model.ConsultaPaciente;
 import com.vacinas.model.Paciente;
 
 public class PacienteService {
@@ -23,7 +25,7 @@ public class PacienteService {
         }
     }
 
-    public Paciente consultarPorId(int id) {
+    public ConsultaPaciente consultarPorId(int id) {
         try {
             this.conexao = ConexaoDAO.getConexao();
             PacienteDAO.conexao = conexao;
@@ -32,5 +34,37 @@ public class PacienteService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Paciente create(Paciente paciente) throws SQLException {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            PacienteDAO.conexao = this.conexao;
+            return PacienteDAO.criar(paciente);
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    public boolean delete(int id) {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            PacienteDAO.conexao = this.conexao;
+            return PacienteDAO.deletar(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public ArrayList<ConsultaPaciente> buscarTodos() {
+        try {
+            this.conexao = ConexaoDAO.getConexao();
+            PacienteDAO.conexao = this.conexao;
+            return PacienteDAO.buscarTodos();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<ConsultaPaciente>();
+        }
     }
 }
