@@ -1,7 +1,6 @@
 package com.vacinas.model;
 
 import java.time.LocalDate;
-
 import com.vacinas.enums.Sexo;
 
 public class Paciente {
@@ -12,6 +11,8 @@ public class Paciente {
     private LocalDate data_nascimento;
     private Integer responsavel;
 
+    public Paciente() {}
+
     public Paciente(int id, String nome, String cpf, Sexo sexo, LocalDate data_nascimento, Integer responsavel) {
         this.id = id;
         this.nome = nome;
@@ -19,6 +20,11 @@ public class Paciente {
         this.sexo = sexo;
         this.data_nascimento = data_nascimento;
         this.responsavel = responsavel;
+    }
+
+    public Paciente(int id, String nome) { // ✅ Construtor corrigido
+        this.id = id;
+        this.nome = nome;
     }
 
     public Integer getResponsavel() {
@@ -83,5 +89,4 @@ public class Paciente {
     public void setData_nascimento(LocalDate data_nascimento) {
         this.data_nascimento = data_nascimento;
     }
-
 }

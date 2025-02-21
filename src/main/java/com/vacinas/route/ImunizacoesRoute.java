@@ -21,6 +21,7 @@ import com.vacinas.core.util.StringUtil;
 import com.vacinas.model.Imunizacoes;
 import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
 import com.vacinas.service.ImunizacoesService;
+import com.vacinas.model.Dose;
 
 import spark.Request;
 import spark.Response;
@@ -35,6 +36,19 @@ public class ImunizacoesRoute {
         Spark.delete("/imunizacoes/:id", excluirImunizacoes(imunizacoesService));
         Spark.get("/imunizacoes/paciente/:id", consultarPorIdPaciente(imunizacoesService));
         Spark.get("/imunizacoes", consultarTodasImunizacoes(imunizacoesService));
+
+        Spark.get("/doses", (Request req, Response res) -> {
+            res.type("application/json");
+            try {
+                ArrayList<Dose> doses = imunizacoesService.listarTodasDoses();
+                return new Gson().toJson(doses);
+            } catch (Exception e) {
+                e.printStackTrace();
+                res.status(500);
+                return new Gson().toJson(Map.of("erro", "Erro ao buscar doses: " + e.getMessage()));
+            }
+        });
+
         Spark.get("/estatisticas/imunizacoes/paciente/:id", contarVacinasPorPaciente(imunizacoesService));
         Spark.get("/imunizacao/:id", consultarImunizacaoPorId(imunizacoesService));
         Spark.get("/estatisticas/imunizacoes_atrasadas/paciente/:id", contarVacinasAtrasadas(imunizacoesService));
@@ -45,43 +59,42 @@ public class ImunizacoesRoute {
     }
 
     private static Route inserirImunizacoes(ImunizacoesService imunizacoesService) {
-        return new Route() {
-            @Override
-            public Object handle(Request request, Response response) throws Exception {
-                response.type("application/json");
-                Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .create();
-                Imunizacoes imunizacoes = gson.fromJson(request.body(), Imunizacoes.class);
-                int resultado = imunizacoesService.inserirImunizacao(imunizacoes);
-                response.status(201);
-                return StringUtil.retornoJsonMensagem("Imunização inserida com sucesso. ID:" + resultado);
-            }
+        return (Request request, Response response) -> {
+            response.type("application/json");
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                    .create();
+
+            Imunizacoes imunizacoes = gson.fromJson(request.body(), Imunizacoes.class);
+            int resultado = imunizacoesService.inserirImunizacao(imunizacoes);
+
+            response.status(201);
+            return Map.of("mensagem", "Imunização inserida com sucesso. ID: " + resultado);
         };
     }
 
-    public static class LocalDateAdapter implements JsonDeserializer<LocalDate>, JsonSerializer<LocalDate> {
+    public static class LocalDateAdapter implements com.google.gson.JsonDeserializer<LocalDate>, com.google.gson.JsonSerializer<LocalDate> {
         private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
         @Override
-        public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(date.format(formatter));
+        public com.google.gson.JsonElement serialize(LocalDate date, java.lang.reflect.Type typeOfSrc, com.google.gson.JsonSerializationContext context) {
+            return new com.google.gson.JsonPrimitive(date.format(formatter));
         }
 
         @Override
-        public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
+        public LocalDate deserialize(com.google.gson.JsonElement json, java.lang.reflect.Type typeOfT, com.google.gson.JsonDeserializationContext context) {
             return LocalDate.parse(json.getAsString(), formatter);
         }
     }
-    
 
     private static Route consultarTodasImunizacoes(ImunizacoesService imunizacoesService) {
-        return new Route() {
-            @Override
-            public Object handle(Request request, Response response) throws Exception {
-                response.type("aplication/json");
+        return (Request request, Response response) -> {
+            response.type("application/json");
 
+<<<<<<< HEAD
+            ArrayList<Imunizacoes> listaImunizacoes = imunizacoesService.consultarTodasImunizacoes();
+            Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
+=======
                 ArrayList<ResultadoImunizacaoPorIdPaciente> listaImunizacoes = imunizacoesService.consultarTodasImunizacoes();
                 if (listaImunizacoes != null) {
                     response.status(200);
@@ -93,10 +106,13 @@ public class ImunizacoesRoute {
                     response.status(204); // 204 No Content
                     return new Gson().toJson(new ArrayList<>());
                 }
+>>>>>>> f69027de2f4859806942ca557943d67fb12329a0
 
-            }
+            response.status(200);
+            return gson.toJson(listaImunizacoes);
         };
     }
+
 
     private static Route consultarPorIdPaciente(ImunizacoesService imunizacoesService) {
         return new Route() {
@@ -166,8 +182,13 @@ public class ImunizacoesRoute {
                 int resultado = imunizacoesService.excluir(id);
                 if (resultado > 0) {
                     response.status(200); // 200 Ok
+<<<<<<< HEAD
+                    return StringUtil.retornoJsonMensagem("Imunização com id" + id + " foi excluida com sucesso.");
+
+=======
                     return StringUtil.retornoJsonMensagem("Imunização com ID " + id + " foi excluida com sucesso.");
                 
+>>>>>>> f69027de2f4859806942ca557943d67fb12329a0
                 } else {
                     response.status(209); // 404 Not Found
                     return StringUtil.retornoJsonMensagem("A imunização com ID " + id + " não foi encontrada.");
@@ -337,11 +358,11 @@ public class ImunizacoesRoute {
             if (deletado) {
                 response.status(200);
                 return StringUtil.retornoJsonMensagem("Imunização do Paciente deletado com sucesso.");
-        
+
             } else {
                 response.status(500);
                 return StringUtil.retornoJsonMensagem("Erro ao deletar imunização do paciente.");
-    
+
             }
         };
     }

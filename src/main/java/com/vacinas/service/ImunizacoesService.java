@@ -5,18 +5,24 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import com.vacinas.core.config.ConexaoDAO;
+import com.vacinas.dao.ConexaoDAO;
 import com.vacinas.dao.ImunizacoesDAO;
+import com.vacinas.model.Dose;
 import com.vacinas.model.Imunizacoes;
+<<<<<<< HEAD
+import com.vacinas.model.Paciente;
+
+=======
 import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
+>>>>>>> f69027de2f4859806942ca557943d67fb12329a0
 
 public class ImunizacoesService {
 
     private Connection conexao;
 
-    public int inserirImunizacao(Imunizacoes imunizacoes) {
+    public static int inserirImunizacao(Imunizacoes imunizacoes) {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            Connection conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
             return ImunizacoesDAO.inserirImunizacao(imunizacoes);
         } catch (SQLException e) {
@@ -25,9 +31,14 @@ public class ImunizacoesService {
         return 0;
     }
 
+<<<<<<< HEAD
+
+    public ArrayList<Imunizacoes> consultarTodasImunizacoes() {
+=======
     public ArrayList<ResultadoImunizacaoPorIdPaciente> consultarTodasImunizacoes() {
+>>>>>>> f69027de2f4859806942ca557943d67fb12329a0
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
             ArrayList<ResultadoImunizacaoPorIdPaciente> imunizacoes = ImunizacoesDAO.consultarTodasImunizacoes();
             return imunizacoes;
@@ -40,7 +51,7 @@ public class ImunizacoesService {
 
     public ArrayList<ResultadoImunizacaoPorIdPaciente> consultarPorIdPaciente(int idPaciente) {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
             ArrayList<ResultadoImunizacaoPorIdPaciente> imunizacoes = ImunizacoesDAO.consultarPorIdPaciente(idPaciente);
             return imunizacoes;
@@ -53,7 +64,7 @@ public class ImunizacoesService {
 
     public int alterarImunizacoes(Imunizacoes imunizacoes) throws SQLException {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
             var resultado = ImunizacoesDAO.atualizarImunizacoes(imunizacoes);
             return resultado;
@@ -66,7 +77,7 @@ public class ImunizacoesService {
 
     public int excluir(int id) {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
             return ImunizacoesDAO.excluirImunizacoes(id);
 
@@ -81,7 +92,7 @@ public class ImunizacoesService {
 
     public int contarVacinasPorPaciente(int idPaciente) {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
             return ImunizacoesDAO.contarVacinasPorPaciente(idPaciente);
         } catch (SQLException e) {
@@ -92,7 +103,7 @@ public class ImunizacoesService {
 
     public Imunizacoes consultarImunizacaoPorId(int id) {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
             return ImunizacoesDAO.consultarImunizacaoPorId(id);
         } catch (SQLException e) {
@@ -103,7 +114,7 @@ public class ImunizacoesService {
 
     public int contarVacinasAtrasadas(int idPaciente) {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
             return ImunizacoesDAO.contarVacinasAtrasadas(idPaciente);
         } catch (SQLException e) {
@@ -115,7 +126,7 @@ public class ImunizacoesService {
 
     public int contarVacinasAcimaIdade(int idadeMeses) {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
             return ImunizacoesDAO.contarVacinasAcimaIdade(idadeMeses);
         } catch (SQLException e) {
@@ -127,7 +138,7 @@ public class ImunizacoesService {
 
     public int contarVacinasProximoMes(int idPaciente) {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
             return ImunizacoesDAO.contarVacinasProximoMes(idPaciente);
         } catch (SQLException e) {
@@ -138,7 +149,7 @@ public class ImunizacoesService {
 
     public ArrayList<Imunizacoes> consultarImunizacoesPorPacienteEIntervalo(int idPaciente, LocalDate dtInicio, LocalDate dtFim) {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
             return ImunizacoesDAO.consultarImunizacoesPorPacienteEIntervalo(idPaciente, dtInicio, dtFim);
         } catch (SQLException e) {
@@ -149,7 +160,7 @@ public class ImunizacoesService {
 
     public boolean deletarPorPaciente(int idPaciente) {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
             return ImunizacoesDAO.deletarPorPaciente(idPaciente);
 
@@ -158,6 +169,26 @@ public class ImunizacoesService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public ArrayList<Paciente> listarTodosPacientes() {
+        try {
+            this.conexao = ConexaoDAO.getConnection();
+            return ImunizacoesDAO.listarTodosPacientes();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public ArrayList<Dose> listarTodasDoses() {
+        try {
+            this.conexao = ConexaoDAO.getConnection();
+            return ImunizacoesDAO.listarTodasDoses();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
 }
