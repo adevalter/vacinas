@@ -4,10 +4,10 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import com.vacinas.model.Paciente;
+import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
 import com.vacinas.core.config.ConexaoDAO;
 import com.vacinas.model.Dose;
 import com.vacinas.model.Imunizacoes;
-import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
 
 public class ImunizacoesDAO {
     public static Connection conexao;
@@ -97,8 +97,11 @@ public class ImunizacoesDAO {
                 FROM imunizacoes i inner join paciente p on p.id = i.id_paciente
                 inner join dose d on d.id = i.id_dose
                 """;
-        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
-            ResultSet resultado = comando.executeQuery();
+
+        try (Connection conexao = ConexaoDAO.getConnection();
+                PreparedStatement comando = conexao.prepareStatement(sql);
+                ResultSet resultado = comando.executeQuery()) {
+
             while (resultado.next()) {
                 LocalDate dataAplicacao = resultado.getDate("data_aplicacao").toLocalDate();
                 listaImunizacoes.add(new ResultadoImunizacaoPorIdPaciente(
@@ -125,8 +128,8 @@ public class ImunizacoesDAO {
                 inner join dose d on d.id = i.id_dose
                 where i.id_paciente = ?
                 """;
-        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
 
+        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
             comando.setInt(1, idPaciente);
             ResultSet resultado = comando.executeQuery();
             while (resultado.next()) {
@@ -140,6 +143,7 @@ public class ImunizacoesDAO {
                         resultado.getString("lote"),
                         resultado.getString("local_aplicacao"),
                         resultado.getString("profissional_aplicador")));
+
             }
         }
         return listaImunizacoes;

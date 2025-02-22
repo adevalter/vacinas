@@ -25,7 +25,7 @@ public class ImunizacoesRoute {
         Spark.post("/imunizacoes", inserirImunizacoes(imunizacoesService));
         Spark.put("/imunizacoes/:id", alterarImunizacoes(imunizacoesService));
         Spark.delete("/imunizacoes/:id", excluirImunizacoes(imunizacoesService));
-        Spark.get("/imunizacoes/paciente/:id", consultarPorIdPaciente(imunizacoesService));
+        Spark.get("imunizacoes/paciente/:id", consultarPorIdPaciente(imunizacoesService));
         Spark.get("/imunizacoes", consultarTodasImunizacoes(imunizacoesService));
         Spark.get("/imunizacoes/:id", consultarImunizacaoPorId(imunizacoesService));
         Spark.get("/imunizacoes/paciente/:id/aplicacao/:dt_ini/:dt_fim",
@@ -44,7 +44,9 @@ public class ImunizacoesRoute {
             int resultado = imunizacoesService.inserirImunizacao(imunizacoes);
 
             response.status(201);
-            return Map.of("mensagem", "Imunização inserida com sucesso. ID: " + resultado);
+            return StringUtil
+                    .retornoJsonMensagem("Imunização inserida com sucesso. ID: " + resultado);
+
         };
     }
 
@@ -103,7 +105,7 @@ public class ImunizacoesRoute {
 
                 } else {
                     response.status(404);
-                    return StringUtil.retornoJsonMensagem("Não existe imunização para paciente com ID " + idPaciente);
+                    return StringUtil.retornoJsonMensagem("Não existe imunização para paciente com ID" + idPaciente);
                 }
 
             }
@@ -129,7 +131,7 @@ public class ImunizacoesRoute {
                                 .retornoJsonMensagem("Imunização com ID " + id + " foi atulizado com sucesso.");
                     } else {
                         response.status(209); // 404 not found
-                        return StringUtil.retornoJsonMensagem("A Imunização com ID " + id + " não foi encontrada.");
+                        return StringUtil.retornoJsonMensagem("A Imunização com id" + id + " não foi encontrada.");
                     }
                 } catch (SQLIntegrityConstraintViolationException e) {
                     response.status(209); // 404 not found
@@ -158,7 +160,7 @@ public class ImunizacoesRoute {
 
                 } else {
                     response.status(209); // 404 Not Found
-                    return StringUtil.retornoJsonMensagem("A imunização com ID " + id + " não foi encontrada.");
+                    return StringUtil.retornoJsonMensagem("A imunização com id" + id + " não foi encontrada.");
                 }
 
             }

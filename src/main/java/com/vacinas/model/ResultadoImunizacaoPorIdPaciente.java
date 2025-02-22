@@ -11,9 +11,9 @@ public class ResultadoImunizacaoPorIdPaciente {
     private String lote;
     private String localAplicacao;
     private String profissionalAplicador;
-    
+
     public ResultadoImunizacaoPorIdPaciente(int id, String nome, String dose, LocalDate dataAplicacao,
-            String fabricante, String lote, String localAplicacao, String profissionalAplicador) {
+                                            String fabricante, String lote, String localAplicacao, String profissionalAplicador) {
         this.id = id;
         this.nome = nome;
         this.dose = dose;

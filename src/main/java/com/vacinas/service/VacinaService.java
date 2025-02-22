@@ -22,7 +22,7 @@ public class VacinaService {
     }
 
     public ArrayList<Vacina> listarPorFaixaEtaria(String faixa) throws SQLException {
-        try 
+        try
         {
             
             this.conexao = ConexaoDAO.getConnection();
@@ -35,7 +35,7 @@ public class VacinaService {
         return new  ArrayList<Vacina>();
     }
     public ArrayList<ResultadoVacinaIdadeMaior> listarPorIdadeMaior(int idadeEmMeses) throws SQLException {
-        try 
+        try
         {
             
             this.conexao = ConexaoDAO.getConnection();
@@ -48,7 +48,7 @@ public class VacinaService {
         return new  ArrayList<ResultadoVacinaIdadeMaior>();
     }
     public ArrayList<ResultadoNaoAplicaveis> listarNaoAplicaveis(int idadePaciente) throws SQLException {
-        try 
+        try
         {
             
             this.conexao = ConexaoDAO.getConnection();
@@ -70,9 +70,9 @@ public class VacinaService {
         }
         return new ArrayList<>();
     }
-    
-    }
-    
+
+}
+
 
 
 

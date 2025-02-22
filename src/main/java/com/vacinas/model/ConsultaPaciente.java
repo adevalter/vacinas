@@ -13,7 +13,7 @@ public class ConsultaPaciente {
     private String nomeResponsavel;
 
     public ConsultaPaciente(int id, String nome, String cpf, Sexo sexo, LocalDate data_nascimento,
-            String nomeResponsavel) {
+                            String nomeResponsavel) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;

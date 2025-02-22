@@ -10,13 +10,6 @@ import com.vacinas.core.config.ConexaoDAO;
 public class EstatisticaDAO {
     public static Connection conexao;
 
-    static {
-        try {
-            conexao = ConexaoDAO.getConnection();
-        } catch (SQLException e) {
-            throw new RuntimeException("❌ Erro ao conectar ao banco!", e);
-        }
-    }
 
     public static int contarVacinasPorPaciente(int idPaciente) throws SQLException {
         String sql = "SELECT COUNT(*) FROM imunizacoes WHERE id_paciente = ?";

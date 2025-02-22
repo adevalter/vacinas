@@ -9,6 +9,7 @@ import com.vacinas.core.config.ConexaoDAO;
 import com.vacinas.dao.ImunizacoesDAO;
 import com.vacinas.model.Imunizacoes;
 import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
+import com.vacinas.model.Paciente;
 
 public class ImunizacoesService {
 
@@ -26,6 +27,7 @@ public class ImunizacoesService {
     }
 
     public ArrayList<ResultadoImunizacaoPorIdPaciente> consultarTodasImunizacoes() {
+
         try {
             this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
@@ -42,8 +44,8 @@ public class ImunizacoesService {
         try {
             this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
-            ArrayList<ResultadoImunizacaoPorIdPaciente> imunizacoes = ImunizacoesDAO.consultarPorIdPaciente(idPaciente);
-            return imunizacoes;
+            ArrayList<ResultadoImunizacaoPorIdPaciente> Imunizacoes = ImunizacoesDAO.consultarPorIdPaciente(idPaciente);
+            return Imunizacoes;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

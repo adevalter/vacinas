@@ -28,7 +28,6 @@ public class Imunizacoes {
     private String profissionalAplicador;
 
     public Imunizacoes() {
-        // Construtor vazio necessário para desserialização do JSON
     }
 
     public Imunizacoes(int idPaciente, int idDose, LocalDate dataAplicacao, String fabricante, String lote,
