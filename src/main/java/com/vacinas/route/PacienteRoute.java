@@ -19,11 +19,11 @@ import spark.Spark;
 
 public class PacienteRoute {
     public static void processarRotas(PacienteService pacienteService) {
+        Spark.post("/paciente", criarPaciente(pacienteService));
+        Spark.get("/paciente", buscarTodos(pacienteService));
         Spark.put("/paciente/:id", atualizarPaciente(pacienteService));
         Spark.get("/paciente/:id", consultarPorId(pacienteService));
-        Spark.post("/paciente", criarPaciente(pacienteService));
         Spark.delete("/paciente/:id", deletarPaciente(pacienteService));
-        Spark.get("/paciente", buscarTodos(pacienteService));
     }
 
     private static Route atualizarPaciente(PacienteService pacienteService) {
@@ -70,8 +70,7 @@ public class PacienteRoute {
         };
     }
 
-
-     private static Route criarPaciente(PacienteService pacienteService) {
+    private static Route criarPaciente(PacienteService pacienteService) {
         return new Route() {
             @Override
             public Object handle(Request request, Response response) throws Exception {
@@ -82,23 +81,24 @@ public class PacienteRoute {
                             .create();
                     Paciente paciente = gson.fromJson(request.body(), Paciente.class);
                     Paciente novoPaciente = pacienteService.create(paciente);
-        
+
                     if (novoPaciente != null && novoPaciente.getId() > 0) {
                         response.status(201);
                         return gson.toJson(novoPaciente);
                     } else {
                         response.status(500);
                         return StringUtil.retornoJsonMensagem("Erro ao criar paciente.");
-                    }  
+                    }
                 } catch (SQLIntegrityConstraintViolationException e) {
                     response.status(209); // 404 not found
-                    return StringUtil.retornoJsonMensagem("Falha ao tentar cadastrar paciente. Nome já está cadastrado.");
-                    
+                    return StringUtil
+                            .retornoJsonMensagem("Falha ao tentar cadastrar paciente. Nome já está cadastrado.");
+
                 } catch (Exception e) {
                     response.status(209); // 404 not found
                     return StringUtil.retornoJsonMensagem("Falha ao tentar cadastrar por favor revisar dados.");
                 }
-                  
+
             }
         };
     }
@@ -106,16 +106,28 @@ public class PacienteRoute {
     private static Route deletarPaciente(PacienteService pacienteService) {
         return (Request request, Response response) -> {
             response.type("application/json");
-            int id = Integer.parseInt(request.params(":id"));
-            boolean deletado = pacienteService.delete(id);
 
-            if (deletado) {
-                response.status(200);
-                return StringUtil.retornoJsonMensagem("Paciente deletado com sucesso.");
-            } else {
-                response.status(500);
-                return StringUtil.retornoJsonMensagem("Erro ao deletar paciente.");
+            try {
+                int id = Integer.parseInt(request.params(":id"));
+                boolean deletado = pacienteService.delete(id);
+
+                if (deletado) {
+                    response.status(200);
+                    return StringUtil.retornoJsonMensagem("Paciente deletado com sucesso.");
+                } else {
+                    response.status(500);
+                    return StringUtil.retornoJsonMensagem("Erro ao deletar paciente.");
+                }
+
+            } catch (SQLIntegrityConstraintViolationException e) {
+                response.status(409);
+                return StringUtil.retornoJsonMensagem(
+                        "Erro ao deletar paciente existe imunização cadastrada para esse paciente.");
+            } catch (Exception e) {
+                response.status(404); // 404 not found
+                return StringUtil.retornoJsonMensagem("Falha ao tentar excluir dados.");
             }
+
         };
     }
 

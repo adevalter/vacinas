@@ -15,7 +15,7 @@ public class VacinaService {
     private Connection conexao;
 
     public Vacina inserir(Vacina vacina) throws SQLException {
-        this.conexao = ConexaoDAO.getConexao();
+        this.conexao = ConexaoDAO.getConnection();
         VacinaDAO.conexao = conexao;
         VacinaDAO.inserir(vacina);
         return vacina;
@@ -25,7 +25,7 @@ public class VacinaService {
         try 
         {
             
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             VacinaDAO.conexao = conexao;
             ArrayList<Vacina> listaporFaixaEtaria = VacinaDAO.listarPorFaixaEtaria(faixa);
             return listaporFaixaEtaria;
@@ -38,7 +38,7 @@ public class VacinaService {
         try 
         {
             
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             VacinaDAO.conexao = conexao;
             ArrayList<ResultadoVacinaIdadeMaior> listarTodas = VacinaDAO.listarPorIdadeMaior(idadeEmMeses);
             return listarTodas;
@@ -51,7 +51,7 @@ public class VacinaService {
         try 
         {
             
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             VacinaDAO.conexao = conexao;
             ArrayList<ResultadoNaoAplicaveis> listarTodas = VacinaDAO.listarNaoAplicaveis(idadePaciente);
             return listarTodas;
@@ -62,7 +62,7 @@ public class VacinaService {
     }
     public ArrayList<Vacina> listarTodas() throws SQLException {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             VacinaDAO.conexao = conexao;
             return VacinaDAO.listarTodas();
         } catch (Exception e) {
