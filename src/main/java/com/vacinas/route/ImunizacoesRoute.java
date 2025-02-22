@@ -1,6 +1,5 @@
 package com.vacinas.route;
 
-
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -15,7 +14,6 @@ import com.vacinas.model.Imunizacoes;
 import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
 import com.vacinas.service.ImunizacoesService;
 
-
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -29,11 +27,8 @@ public class ImunizacoesRoute {
         Spark.delete("/imunizacoes/:id", excluirImunizacoes(imunizacoesService));
         Spark.get("/imunizacoes/paciente/:id", consultarPorIdPaciente(imunizacoesService));
         Spark.get("/imunizacoes", consultarTodasImunizacoes(imunizacoesService));
-
-        
-        Spark.get("/imunizacao/:id", consultarImunizacaoPorId(imunizacoesService));
-       
-        Spark.get("/imunizacao/paciente/:id/aplicacao/:dt_ini/:dt_fim",
+        Spark.get("/imunizacoes/:id", consultarImunizacaoPorId(imunizacoesService));
+        Spark.get("/imunizacoes/paciente/:id/aplicacao/:dt_ini/:dt_fim",
                 consultarImunizacoesPorPacienteEIntervalo(imunizacoesService));
         Spark.delete("/imunizacoes/paciente/:id", deletarPaciente(imunizacoesService));
     }
@@ -171,7 +166,6 @@ public class ImunizacoesRoute {
         };
     }
 
-    
     private static Route consultarImunizacaoPorId(ImunizacoesService imunizacoesService) {
         return (Request request, Response response) -> {
             response.type("application/json");
@@ -199,7 +193,6 @@ public class ImunizacoesRoute {
             }
         };
     }
-
 
     private static Route consultarImunizacoesPorPacienteEIntervalo(ImunizacoesService imunizacoesService) {
         return (Request request, Response response) -> {

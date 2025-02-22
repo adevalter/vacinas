@@ -46,14 +46,13 @@ public class PacienteService {
         }
     }
 
-    public boolean delete(int id) {
+    public boolean delete(int id) throws SQLException {
         try {
             this.conexao = ConexaoDAO.getConnection();
             PacienteDAO.conexao = this.conexao;
             return PacienteDAO.deletar(id);
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+           throw e;
         }
     }
 
