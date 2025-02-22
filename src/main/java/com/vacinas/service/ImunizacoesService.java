@@ -5,12 +5,11 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import com.vacinas.dao.ConexaoDAO;
+import com.vacinas.core.config.ConexaoDAO;
 import com.vacinas.dao.ImunizacoesDAO;
-import com.vacinas.model.Dose;
 import com.vacinas.model.Imunizacoes;
+import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
 import com.vacinas.model.Paciente;
-
 
 public class ImunizacoesService {
 
@@ -27,12 +26,12 @@ public class ImunizacoesService {
         return 0;
     }
 
+    public ArrayList<ResultadoImunizacaoPorIdPaciente> consultarTodasImunizacoes() {
 
-    public ArrayList<Imunizacoes> consultarTodasImunizacoes() {
         try {
             this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
-            ArrayList<Imunizacoes> imunizacoes = ImunizacoesDAO.consultarTodasImunizacoes();
+            ArrayList<ResultadoImunizacaoPorIdPaciente> imunizacoes = ImunizacoesDAO.consultarTodasImunizacoes();
             return imunizacoes;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -41,12 +40,12 @@ public class ImunizacoesService {
         return null;
     }
 
-    public Imunizacoes consultarPorIdPaciente(int idPaciente) {
+    public ArrayList<ResultadoImunizacaoPorIdPaciente> consultarPorIdPaciente(int idPaciente) {
         try {
             this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
-            Imunizacoes imunizacoes = ImunizacoesDAO.consultarPorIdPaciente(idPaciente);
-            return imunizacoes;
+            ArrayList<ResultadoImunizacaoPorIdPaciente> Imunizacoes = ImunizacoesDAO.consultarPorIdPaciente(idPaciente);
+            return Imunizacoes;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -81,18 +80,6 @@ public class ImunizacoesService {
         return 0;
     }
 
-
-    public int contarVacinasPorPaciente(int idPaciente) {
-        try {
-            this.conexao = ConexaoDAO.getConnection();
-            ImunizacoesDAO.conexao = conexao;
-            return ImunizacoesDAO.contarVacinasPorPaciente(idPaciente);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
     public Imunizacoes consultarImunizacaoPorId(int id) {
         try {
             this.conexao = ConexaoDAO.getConnection();
@@ -104,42 +91,8 @@ public class ImunizacoesService {
         return null;
     }
 
-    public int contarVacinasAtrasadas(int idPaciente) {
-        try {
-            this.conexao = ConexaoDAO.getConnection();
-            ImunizacoesDAO.conexao = conexao;
-            return ImunizacoesDAO.contarVacinasAtrasadas(idPaciente);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-
-    public int contarVacinasAcimaIdade(int idadeMeses) {
-        try {
-            this.conexao = ConexaoDAO.getConnection();
-            ImunizacoesDAO.conexao = conexao;
-            return ImunizacoesDAO.contarVacinasAcimaIdade(idadeMeses);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-
-    public int contarVacinasProximoMes(int idPaciente) {
-        try {
-            this.conexao = ConexaoDAO.getConnection();
-            ImunizacoesDAO.conexao = conexao;
-            return ImunizacoesDAO.contarVacinasProximoMes(idPaciente);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public ArrayList<Imunizacoes> consultarImunizacoesPorPacienteEIntervalo(int idPaciente, LocalDate dtInicio, LocalDate dtFim) {
+    public ArrayList<Imunizacoes> consultarImunizacoesPorPacienteEIntervalo(int idPaciente, LocalDate dtInicio,
+            LocalDate dtFim) {
         try {
             this.conexao = ConexaoDAO.getConnection();
             ImunizacoesDAO.conexao = conexao;
@@ -161,26 +114,6 @@ public class ImunizacoesService {
             e.printStackTrace();
             return false;
         }
-    }
-
-    public ArrayList<Paciente> listarTodosPacientes() {
-        try {
-            this.conexao = ConexaoDAO.getConnection();
-            return ImunizacoesDAO.listarTodosPacientes();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
-    public ArrayList<Dose> listarTodasDoses() {
-        try {
-            this.conexao = ConexaoDAO.getConnection();
-            return ImunizacoesDAO.listarTodasDoses();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
     }
 
 }

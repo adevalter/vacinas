@@ -2,9 +2,11 @@ package com.vacinas;
 
 import java.sql.SQLException;
 
+import com.vacinas.route.EstatisticaRoute;
 import com.vacinas.route.ImunizacoesRoute;
 import com.vacinas.route.PacienteRoute;
 import com.vacinas.route.VacinaRoute;
+import com.vacinas.service.EstatisticaService;
 import com.vacinas.service.ImunizacoesService;
 import com.vacinas.service.PacienteService;
 import com.vacinas.service.VacinaService;
@@ -18,8 +20,8 @@ public class Main {
 
     private static final VacinaService vacinaService = new VacinaService();
     private static final PacienteService pacienteService = new PacienteService();
-
     private static final ImunizacoesService imunizacoesService = new ImunizacoesService();
+    private static final EstatisticaService estatisticaService = new EstatisticaService();
 
     public static void main(String[] args) throws SQLException {
 
@@ -57,5 +59,6 @@ public class Main {
         VacinaRoute.processarRotas(vacinaService);
         ImunizacoesRoute.processarRotas(imunizacoesService);
         PacienteRoute.processarRotas(pacienteService);
+        EstatisticaRoute.processarRotas(estatisticaService);
     }
 }

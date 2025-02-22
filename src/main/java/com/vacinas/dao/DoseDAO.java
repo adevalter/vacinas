@@ -11,7 +11,7 @@ public class DoseDAO {
 
     static {
         try {
-            conexao = ConexaoDAO.getConexao();
+            conexao = ConexaoDAO.getConnection();
         } catch (SQLException e) {
             throw new RuntimeException("❌ Erro ao conectar ao banco!", e);
         }
@@ -22,7 +22,7 @@ public class DoseDAO {
         String sql = "SELECT id, id_vacina, dose, idade_recomendada_aplicacao FROM dose";
 
         try (PreparedStatement stmt = conexao.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Dose dose = new Dose();

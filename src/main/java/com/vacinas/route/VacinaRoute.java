@@ -11,7 +11,7 @@ import spark.Spark;
 
 public class VacinaRoute {
     public static void processarRotas(VacinaService vacinaService) {
-        Spark.post("/vacina", inserirVacina(vacinaService));
+        Spark.post("/vacinas", inserirVacina(vacinaService));
         Spark.get("/vacinas", consultarTodas(vacinaService));
         Spark.get("/vacinas/faixaetaria/:faixa", consultarPorFaixaEtaria(vacinaService));
         Spark.get("/vacinas/idademaior/:meses", consultarPorIdadeMaior(vacinaService));

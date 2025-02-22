@@ -1,6 +1,5 @@
 package com.vacinas.route;
 
-
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -12,10 +11,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vacinas.core.util.StringUtil;
 import com.vacinas.model.Imunizacoes;
+import com.vacinas.model.ResultadoImunizacaoPorIdPaciente;
 import com.vacinas.service.ImunizacoesService;
-import com.vacinas.model.Dose;
-import com.vacinas.dao.DoseDAO;
-import java.util.List;
 
 import spark.Request;
 import spark.Response;
@@ -28,27 +25,11 @@ public class ImunizacoesRoute {
         Spark.post("/imunizacoes", inserirImunizacoes(imunizacoesService));
         Spark.put("/imunizacoes/:id", alterarImunizacoes(imunizacoesService));
         Spark.delete("/imunizacoes/:id", excluirImunizacoes(imunizacoesService));
-        Spark.get("/paciente/:id", consultarPorIdPaciente(imunizacoesService));
+        Spark.get("imunizacoes/paciente/:id", consultarPorIdPaciente(imunizacoesService));
         Spark.get("/imunizacoes", consultarTodasImunizacoes(imunizacoesService));
-
-        Spark.get("/imunizacoes/doses", (Request req, Response res) -> {
-            res.type("application/json");
-            try {
-                List<Dose> doses = new DoseDAO().listarTodasDoses();
-                return new Gson().toJson(doses);
-            } catch (Exception e) {
-                e.printStackTrace();
-                res.status(500);
-                return new Gson().toJson(Map.of("erro", "Erro ao buscar doses: " + e.getMessage()));
-            }
-        });
-
-        Spark.get("/estatisticas/imunizacoes/paciente/:id", contarVacinasPorPaciente(imunizacoesService));
-        Spark.get("/imunizacao/:id", consultarImunizacaoPorId(imunizacoesService));
-        Spark.get("/estatisticas/imunizacoes_atrasadas/paciente/:id", contarVacinasAtrasadas(imunizacoesService));
-        Spark.get("/estatisticas/imunizacoes_acima_idade/:meses", contarVacinasAcimaIdade(imunizacoesService));
-        Spark.get("/estatisticas/proximas_imunizacoes/paciente/:id", contarVacinasProximoMes(imunizacoesService));
-        Spark.get("/paciente/:id/aplicacao/:dt_ini/:dt_fim", consultarImunizacoesPorPacienteEIntervalo(imunizacoesService));
+        Spark.get("/imunizacoes/:id", consultarImunizacaoPorId(imunizacoesService));
+        Spark.get("/imunizacoes/paciente/:id/aplicacao/:dt_ini/:dt_fim",
+                consultarImunizacoesPorPacienteEIntervalo(imunizacoesService));
         Spark.delete("/imunizacoes/paciente/:id", deletarPaciente(imunizacoesService));
     }
 
@@ -63,20 +44,25 @@ public class ImunizacoesRoute {
             int resultado = imunizacoesService.inserirImunizacao(imunizacoes);
 
             response.status(201);
-            return Map.of("mensagem", "Imunização inserida com sucesso. ID: " + resultado);
+            return StringUtil
+                    .retornoJsonMensagem("Imunização inserida com sucesso. ID: " + resultado);
+
         };
     }
 
-    public static class LocalDateAdapter implements com.google.gson.JsonDeserializer<LocalDate>, com.google.gson.JsonSerializer<LocalDate> {
+    public static class LocalDateAdapter
+            implements com.google.gson.JsonDeserializer<LocalDate>, com.google.gson.JsonSerializer<LocalDate> {
         private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
         @Override
-        public com.google.gson.JsonElement serialize(LocalDate date, java.lang.reflect.Type typeOfSrc, com.google.gson.JsonSerializationContext context) {
+        public com.google.gson.JsonElement serialize(LocalDate date, java.lang.reflect.Type typeOfSrc,
+                com.google.gson.JsonSerializationContext context) {
             return new com.google.gson.JsonPrimitive(date.format(formatter));
         }
 
         @Override
-        public LocalDate deserialize(com.google.gson.JsonElement json, java.lang.reflect.Type typeOfT, com.google.gson.JsonDeserializationContext context) {
+        public LocalDate deserialize(com.google.gson.JsonElement json, java.lang.reflect.Type typeOfT,
+                com.google.gson.JsonDeserializationContext context) {
             return LocalDate.parse(json.getAsString(), formatter);
         }
     }
@@ -85,14 +71,20 @@ public class ImunizacoesRoute {
         return (Request request, Response response) -> {
             response.type("application/json");
 
-            ArrayList<Imunizacoes> listaImunizacoes = imunizacoesService.consultarTodasImunizacoes();
-            Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
-
-            response.status(200);
-            return gson.toJson(listaImunizacoes);
+            ArrayList<ResultadoImunizacaoPorIdPaciente> listaImunizacoes = imunizacoesService
+                    .consultarTodasImunizacoes();
+            if (listaImunizacoes != null) {
+                response.status(200);
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                        .create();
+                return gson.toJson(listaImunizacoes);
+            } else {
+                response.status(204); // 204 No Content
+                return new Gson().toJson(new ArrayList<>());
+            }
         };
     }
-
 
     private static Route consultarPorIdPaciente(ImunizacoesService imunizacoesService) {
         return new Route() {
@@ -102,7 +94,8 @@ public class ImunizacoesRoute {
 
                 int idPaciente = Integer.parseInt(request.params("id"));
 
-                Imunizacoes imunizacoes = imunizacoesService.consultarPorIdPaciente(idPaciente);
+                ArrayList<ResultadoImunizacaoPorIdPaciente> imunizacoes = imunizacoesService
+                        .consultarPorIdPaciente(idPaciente);
                 if (imunizacoes != null) {
                     response.status(200);
                     Gson gson = new GsonBuilder()
@@ -134,7 +127,8 @@ public class ImunizacoesRoute {
                     int resultado = imunizacoesService.alterarImunizacoes(imunizacoes);
                     if (resultado > 0) {
                         response.status(200); // 200 ok
-                        return StringUtil.retornoJsonMensagem("Imunização com id" + id + " foi atulizado com sucesso.");
+                        return StringUtil
+                                .retornoJsonMensagem("Imunização com ID " + id + " foi atulizado com sucesso.");
                     } else {
                         response.status(209); // 404 not found
                         return StringUtil.retornoJsonMensagem("A Imunização com id" + id + " não foi encontrada.");
@@ -162,7 +156,7 @@ public class ImunizacoesRoute {
                 int resultado = imunizacoesService.excluir(id);
                 if (resultado > 0) {
                     response.status(200); // 200 Ok
-                    return StringUtil.retornoJsonMensagem("Imunização com id" + id + " foi excluida com sucesso.");
+                    return StringUtil.retornoJsonMensagem("Imunização com ID " + id + " foi excluida com sucesso.");
 
                 } else {
                     response.status(209); // 404 Not Found
@@ -171,29 +165,6 @@ public class ImunizacoesRoute {
 
             }
 
-        };
-    }
-
-    private static Route contarVacinasPorPaciente(ImunizacoesService imunizacoesService) {
-        return (Request request, Response response) -> {
-            response.type("application/json");
-
-            try {
-                int idPaciente = Integer.parseInt(request.params("id"));
-                int quantidade = imunizacoesService.contarVacinasPorPaciente(idPaciente);
-
-                Map<String, Object> resposta = new HashMap<>();
-                resposta.put("quantidade", quantidade);
-
-                response.status(200);
-                return new Gson().toJson(resposta);
-            } catch (NumberFormatException e) {
-                response.status(400);
-                return new Gson().toJson(Map.of("erro", "ID do paciente inválido."));
-            } catch (Exception e) {
-                response.status(500);
-                return new Gson().toJson(Map.of("erro", "Erro ao processar a solicitação."));
-            }
         };
     }
 
@@ -224,75 +195,7 @@ public class ImunizacoesRoute {
             }
         };
     }
-    private static Route contarVacinasAtrasadas(ImunizacoesService imunizacoesService) {
-        return (Request request, Response response) -> {
-            response.type("application/json");
 
-            try {
-                int idPaciente = Integer.parseInt(request.params("id"));
-                int quantidade = imunizacoesService.contarVacinasAtrasadas(idPaciente);
-
-                Map<String, Object> resposta = new HashMap<>();
-                resposta.put("quantidade", quantidade);
-
-                response.status(200);
-                return new Gson().toJson(resposta);
-            } catch (NumberFormatException e) {
-                response.status(400);
-                return new Gson().toJson(Map.of("erro", "ID do paciente inválido."));
-            } catch (Exception e) {
-                response.status(500);
-                return new Gson().toJson(Map.of("erro", "Erro ao processar a solicitação."));
-            }
-        };
-    }
-
-
-    private static Route contarVacinasAcimaIdade(ImunizacoesService imunizacoesService) {
-        return (Request request, Response response) -> {
-            response.type("application/json");
-
-            try {
-                int idadeMeses = Integer.parseInt(request.params("meses"));
-                int quantidade = imunizacoesService.contarVacinasAcimaIdade(idadeMeses);
-
-                Map<String, Object> resposta = new HashMap<>();
-                resposta.put("quantidade", quantidade);
-
-                response.status(200);
-                return new Gson().toJson(resposta);
-            } catch (NumberFormatException e) {
-                response.status(400);
-                return new Gson().toJson(Map.of("erro", "Idade inválida. Informe um número inteiro de meses."));
-            } catch (Exception e) {
-                response.status(500);
-                return new Gson().toJson(Map.of("erro", "Erro ao processar a solicitação."));
-            }
-        };
-    }
-
-    private static Route contarVacinasProximoMes(ImunizacoesService imunizacoesService) {
-        return (Request request, Response response) -> {
-            response.type("application/json");
-
-            try {
-                int idPaciente = Integer.parseInt(request.params("id"));
-                int quantidade = imunizacoesService.contarVacinasProximoMes(idPaciente);
-
-                Map<String, Object> resposta = new HashMap<>();
-                resposta.put("quantidade", quantidade);
-
-                response.status(200);
-                return new Gson().toJson(resposta);
-            } catch (NumberFormatException e) {
-                response.status(400);
-                return new Gson().toJson(Map.of("erro", "ID do paciente inválido."));
-            } catch (Exception e) {
-                response.status(500);
-                return new Gson().toJson(Map.of("erro", "Erro ao processar a solicitação."));
-            }
-        };
-    }
     private static Route consultarImunizacoesPorPacienteEIntervalo(ImunizacoesService imunizacoesService) {
         return (Request request, Response response) -> {
             response.type("application/json");
@@ -302,7 +205,8 @@ public class ImunizacoesRoute {
                 LocalDate dtInicio = LocalDate.parse(request.params("dt_ini"));
                 LocalDate dtFim = LocalDate.parse(request.params("dt_fim"));
 
-                ArrayList<Imunizacoes> imunizacoes = imunizacoesService.consultarImunizacoesPorPacienteEIntervalo(idPaciente, dtInicio, dtFim);
+                ArrayList<Imunizacoes> imunizacoes = imunizacoesService
+                        .consultarImunizacoesPorPacienteEIntervalo(idPaciente, dtInicio, dtFim);
 
                 if (!imunizacoes.isEmpty()) {
                     response.status(200);

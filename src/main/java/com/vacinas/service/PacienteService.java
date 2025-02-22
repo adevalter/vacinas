@@ -15,7 +15,7 @@ public class PacienteService {
 
     public boolean atualizarPaciente(Paciente paciente) {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             PacienteDAO.conexao = conexao;
             int linhasAfetadas = PacienteDAO.atualizarPaciente(paciente);
             return linhasAfetadas > 0;
@@ -27,7 +27,7 @@ public class PacienteService {
 
     public ConsultaPaciente consultarPorId(int id) {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             PacienteDAO.conexao = conexao;
             return PacienteDAO.consultarPorId(id);
         } catch (SQLException e) {
@@ -38,7 +38,7 @@ public class PacienteService {
 
     public Paciente create(Paciente paciente) throws SQLException {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             PacienteDAO.conexao = this.conexao;
             return PacienteDAO.criar(paciente);
         } catch (SQLException e) {
@@ -46,20 +46,19 @@ public class PacienteService {
         }
     }
 
-    public boolean delete(int id) {
+    public boolean delete(int id) throws SQLException {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             PacienteDAO.conexao = this.conexao;
             return PacienteDAO.deletar(id);
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+           throw e;
         }
     }
 
     public ArrayList<ConsultaPaciente> buscarTodos() {
         try {
-            this.conexao = ConexaoDAO.getConexao();
+            this.conexao = ConexaoDAO.getConnection();
             PacienteDAO.conexao = this.conexao;
             return PacienteDAO.buscarTodos();
         } catch (SQLException e) {

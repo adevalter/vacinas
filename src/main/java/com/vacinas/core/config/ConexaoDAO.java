@@ -12,11 +12,18 @@ public class ConexaoDAO {
     private static final String URL = dotenv.get("DB_URL");
     private static final String USER = dotenv.get("DB_USERNAME");
     private static final String PASSWORD = dotenv.get("DB_PASSWORD");
+    private static Connection conexao;
 
-    public static Connection getConexao() throws SQLException {
-
-        return DriverManager.getConnection(URL, USER, PASSWORD);
-
+    public static Connection getConnection() throws SQLException {
+        if (conexao == null || conexao.isClosed()) {
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                conexao = DriverManager.getConnection(URL, USER, PASSWORD);
+                System.out.println("✅ Conexão com o banco estabelecida!");
+            } catch (ClassNotFoundException e) {
+                throw new SQLException("❌ Erro ao carregar o driver do MySQL!", e);
+            }
+        }
+        return conexao;
     }
-
 }

@@ -1,7 +1,7 @@
 package com.vacinas.enums;
 
 public enum PublicoAlvo {
-    CRIANCA,
+    CRIANÇA,
     ADOLESCENTE,
     ADULTO,
     GESTANTE
