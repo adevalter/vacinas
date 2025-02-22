@@ -2,8 +2,8 @@ package com.vacinas.dao;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
+import com.vacinas.core.config.ConexaoDAO;
 import com.vacinas.enums.Sexo;
 import com.vacinas.model.ConsultaPaciente;
 import com.vacinas.model.Paciente;
@@ -31,7 +31,9 @@ public class PacienteDAO {
                 (select nome from paciente where id = p.responsavel) as nome_responsavel
                 from paciente p where p.id = ?
                 """;
-        try (PreparedStatement comando = conexao.prepareStatement(sql)) {
+        try (
+                Connection conexao = ConexaoDAO.getConnection();
+                PreparedStatement comando = conexao.prepareStatement(sql)) {
             comando.setInt(1, id);
             ResultSet resultado = comando.executeQuery();
 
@@ -57,11 +59,11 @@ public class PacienteDAO {
             comando.setString(2, paciente.getCpf());
             comando.setString(3, paciente.getSexo().toString());
             comando.setDate(4, Date.valueOf(paciente.getData_nascimento()));
-            if(paciente.getResponsavel()==null){
+            if (paciente.getResponsavel() == null) {
                 comando.setNull(5, java.sql.Types.INTEGER);
             } else {
-             comando.setInt(5, paciente.getResponsavel());
-            }    
+                comando.setInt(5, paciente.getResponsavel());
+            }
 
             int linhasAfetadas = comando.executeUpdate();
 
@@ -96,7 +98,7 @@ public class PacienteDAO {
                 """;
         ArrayList<ConsultaPaciente> pacientes = new ArrayList<>();
         try (PreparedStatement comando = conexao.prepareStatement(sql);
-             ResultSet resultado = comando.executeQuery()) {
+                ResultSet resultado = comando.executeQuery()) {
             System.out.println("Todos pacianete ====>" + pacientes);
             while (resultado.next()) {
                 ConsultaPaciente paciente = new ConsultaPaciente(
